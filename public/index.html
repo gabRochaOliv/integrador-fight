@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Integrador Fight - API Gateway</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #0f172a;
+      --bg-secondary: #1e293b;
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --accent: #3b82f6;
+      --accent-hover: #2563eb;
+      --error: #ef4444;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --glow: rgba(59, 130, 246, 0.5);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      overflow-y: auto;
+      background-image: 
+        radial-gradient(circle at 15% 50%, rgba(59, 130, 246, 0.15), transparent 25%),
+        radial-gradient(circle at 85% 30%, rgba(139, 92, 246, 0.15), transparent 25%);
+      padding: 2rem;
+    }
+
+    /* Containers gerais */
+    .container {
+      width: 100%;
+      background: rgba(30, 41, 59, 0.7);
+      border-radius: 20px;
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 40px var(--glow);
+      padding: 2.5rem;
+      transition: all 0.4s ease;
+      position: relative;
+      z-index: 10;
+    }
+    .container-login { max-width: 420px; margin: auto; margin-top: 10vh; }
+    .container-dashboard { max-width: 1000px; display: none; }
+
+    /* Estilos de Textos e Headers */
+    .header { text-align: center; margin-bottom: 2.5rem; }
+    .header h1 { font-size: 2.2rem; font-weight: 800; background: linear-gradient(to right, #60a5fa, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .header p { color: var(--text-secondary); font-weight: 300; margin-top: 0.5rem; }
+
+    /* Formulários e Inputs */
+    .form-group { margin-bottom: 1.5rem; }
+    .form-group label { display: block; margin-bottom: 0.5rem; font-size: 0.9rem; color: var(--text-secondary); }
+    .form-group input {
+      width: 100%; padding: 1rem; background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px;
+      color: var(--text-primary); font-size: 1rem; font-family: 'Outfit', sans-serif;
+      outline: none; transition: all 0.3s ease;
+    }
+    .form-group input:focus { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1); }
+
+    /* Botões */
+    .btn {
+      width: 100%; padding: 1rem; border: none; border-radius: 12px;
+      font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease;
+      font-family: 'Outfit', sans-serif;
+    }
+    .btn-primary { background: linear-gradient(135deg, var(--accent), var(--accent-hover)); color: white; box-shadow: 0 4px 14px 0 rgba(59, 130, 246, 0.39); }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4); }
+    
+    .btn-success { background: rgba(16, 185, 129, 0.2); color: var(--success); border: 1px solid var(--success); }
+    .btn-success:hover { background: rgba(16, 185, 129, 0.3); }
+
+    .btn-danger { background: rgba(239, 68, 68, 0.1); color: var(--error); border: 1px solid rgba(239, 68, 68, 0.3); }
+    .btn-danger:hover { background: rgba(239, 68, 68, 0.2); }
+
+    .btn-small { padding: 0.5rem 1rem; font-size: 0.9rem; width: auto; display: inline-block; }
+
+    .message { margin-top: 1rem; text-align: center; font-size: 0.9rem; min-height: 20px; }
+    .error { color: var(--error); }
+    .success { color: var(--success); }
+
+    /* Dashboard Layout */
+    .dashboard-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 1rem; }
+    .dashboard-header h2 { font-size: 1.8rem; }
+    .menu-tabs { display: flex; gap: 1rem; margin-bottom: 2rem; overflow-x: auto; }
+    .tab { padding: 0.5rem 1.5rem; background: rgba(255,255,255,0.05); border-radius: 8px; cursor: pointer; font-weight: 600; color: var(--text-secondary); transition: all 0.2s; }
+    .tab.active { background: var(--accent); color: white; }
+
+    /* Tabela de Dados */
+    .table-container { overflow-x: auto; background: rgba(15, 23, 42, 0.5); border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 1rem; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    th { color: var(--text-secondary); font-weight: 600; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.05em; }
+    tr:hover { background: rgba(255,255,255,0.02); }
+    .actions { display: flex; gap: 0.5rem; }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
+      display: none; justify-content: center; align-items: center; z-index: 100;
+    }
+    .modal {
+      background: var(--bg-secondary); padding: 2rem; border-radius: 16px;
+      width: 100%; max-width: 500px; border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+    }
+    .modal-header { display: flex; justify-content: space-between; margin-bottom: 1.5rem; }
+    .modal-close { background: none; border: none; color: var(--text-secondary); cursor: pointer; font-size: 1.5rem; }
+    
+  </style>
+</head>
+<body>
+
+  <!-- ============================== TELA DE LOGIN ============================== -->
+  <div class="container container-login" id="login-container">
+    <div class="header">
+      <h1>Integrador Fight</h1>
+      <p>Gerenciamento Centralizado - API Gateway</p>
+    </div>
+    
+    <form id="login-form">
+      <div class="form-group">
+        <label>Usuário</label>
+        <input type="text" id="username" placeholder="admin" required>
+      </div>
+      <div class="form-group">
+        <label>Senha</label>
+        <input type="password" id="password" placeholder="admin" required>
+      </div>
+      <button type="submit" class="btn btn-primary" id="login-btn">Entrar no Sistema</button>
+      <div id="login-message" class="message"></div>
+    </form>
+  </div>
+
+  <!-- ============================== TELA DASHBOARD ============================== -->
+  <div class="container container-dashboard" id="dashboard">
+    <div class="dashboard-header">
+      <h2>Painel do Integrador</h2>
+      <div>
+        <button class="btn btn-danger btn-small" id="logout-btn">Sair</button>
+      </div>
+    </div>
+    
+    <!-- Abas das APIs -->
+    <div class="menu-tabs">
+      <div class="tab active" id="tab-apostadores" onclick="switchTab('apostadores')">Apostadores</div>
+      <div class="tab" id="tab-lutadores" onclick="switchTab('lutadores')">Lutadores</div>
+      <div class="tab" onclick="alert('Funcionalidade em desenvolvimento para Lutas!')">Lutas</div>
+      <div class="tab" onclick="alert('Funcionalidade em desenvolvimento para Apostas!')">Apostas</div>
+    </div>
+
+    <!-- ============================== Seção: Apostadores ============================== -->
+    <div id="section-apostadores">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <p style="color: var(--text-secondary);">Gerencie os Apostadores unificados de todas as APIs.</p>
+        <button class="btn btn-success btn-small" onclick="openModalApostador('add')">+ Novo Apostador</button>
+      </div>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nome</th>
+              <th>Idade</th>
+              <th>Chave PIX</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody id="apostadores-tbody">
+            <tr><td colspan="5" style="text-align: center;">Carregando dados da API...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ============================== Seção: Lutadores ============================== -->
+    <div id="section-lutadores" style="display: none;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <p style="color: var(--text-secondary);">Integração Externa com API de Lutadores (Render)</p>
+        <button class="btn btn-success btn-small" onclick="openModalLutador('add')">+ Novo Lutador</button>
+      </div>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nome do Lutador</th>
+              <th>Categoria</th>
+              <th>Apelido</th>
+              <th>Arte Marcial</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody id="lutadores-tbody">
+            <tr><td colspan="5" style="text-align: center;">Carregando dados da API...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ============================== MODAL APOSTADOR ============================== -->
+  <div class="modal-overlay" id="modal-apostador">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="modal-title-apostador">Novo Apostador</h3>
+        <button class="modal-close" onclick="closeModal('modal-apostador')">&times;</button>
+      </div>
+      <form id="apostador-form">
+        <input type="hidden" id="ap-form-id">
+        <div class="form-group">
+          <label>Nome do Apostador</label>
+          <input type="text" id="ap-form-nome" required>
+        </div>
+        <div class="form-group">
+          <label>Idade</label>
+          <input type="number" id="ap-form-idade" required>
+        </div>
+        <div class="form-group">
+          <label>Chave PIX</label>
+          <input type="text" id="ap-form-pix" required>
+        </div>
+        <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+          <button type="button" class="btn btn-danger" onclick="closeModal('modal-apostador')">Cancelar</button>
+          <button type="submit" class="btn btn-success" id="ap-submit-btn">Salvar Apostador</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============================== MODAL LUTADOR ============================== -->
+  <div class="modal-overlay" id="modal-lutador">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="modal-title-lutador">Novo Lutador</h3>
+        <button class="modal-close" onclick="closeModal('modal-lutador')">&times;</button>
+      </div>
+      <form id="lutador-form">
+        <input type="hidden" id="lu-form-id">
+        <div class="form-group">
+          <label>Nome do Lutador</label>
+          <input type="text" id="lu-form-nome" required>
+        </div>
+        <div class="form-group">
+          <label>Categoria</label>
+          <input type="text" id="lu-form-categoria" placeholder="Ex: Peso Leve" required>
+        </div>
+        <div class="form-group">
+          <label>Apelido</label>
+          <input type="text" id="lu-form-apelido" required>
+        </div>
+        <div class="form-group">
+          <label>Arte Marcial</label>
+          <input type="text" id="lu-form-arte" required>
+        </div>
+        <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+          <button type="button" class="btn btn-danger" onclick="closeModal('modal-lutador')">Cancelar</button>
+          <button type="submit" class="btn btn-success" id="lu-submit-btn">Salvar Lutador</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <script>
+    // Referências DOM
+    const loginForm = document.getElementById('login-form');
+    const loginContainer = document.getElementById('login-container');
+    const dashboard = document.getElementById('dashboard');
+    
+    // Variável global
+    let currentToken = localStorage.getItem('integrador_token');
+
+    // Inicialização
+    if (currentToken) {
+      showDashboard();
+      fetchApostadores();
+    }
+
+    // --- AUTENTICAÇÃO ---
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      const btn = document.getElementById('login-btn');
+      const msg = document.getElementById('login-message');
+      
+      btn.innerHTML = 'Autenticando...';
+      btn.disabled = true;
+      msg.textContent = '';
+      
+      try {
+        const response = await fetch('/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+          localStorage.setItem('integrador_token', data.token);
+          currentToken = data.token;
+          msg.className = 'message success';
+          msg.textContent = 'Acesso concedido!';
+          setTimeout(() => { showDashboard(); fetchApostadores(); }, 500);
+        } else {
+          msg.className = 'message error';
+          msg.textContent = data.erro || 'Credenciais inválidas';
+          btn.innerHTML = 'Entrar no Sistema';
+          btn.disabled = false;
+        }
+      } catch (err) {
+        msg.className = 'message error';
+        msg.textContent = 'Erro de rede.';
+        btn.innerHTML = 'Entrar no Sistema';
+        btn.disabled = false;
+      }
+    });
+
+    document.getElementById('logout-btn').addEventListener('click', () => {
+      localStorage.removeItem('integrador_token');
+      currentToken = null;
+      dashboard.style.display = 'none';
+      loginContainer.style.display = 'block';
+    });
+
+    function showDashboard() {
+      loginContainer.style.display = 'none';
+      dashboard.style.display = 'block';
+    }
+
+    // --- CONTROLE DE ABAS ---
+    function switchTab(tabName) {
+      // Ocultar todas as seções
+      document.getElementById('section-apostadores').style.display = 'none';
+      document.getElementById('section-lutadores').style.display = 'none';
+      
+      // Remover classe active de todas as abas
+      document.getElementById('tab-apostadores').classList.remove('active');
+      document.getElementById('tab-lutadores').classList.remove('active');
+      
+      // Mostrar seção correspondente e ativar aba
+      document.getElementById('section-' + tabName).style.display = 'block';
+      document.getElementById('tab-' + tabName).classList.add('active');
+
+      if(tabName === 'apostadores') fetchApostadores();
+      if(tabName === 'lutadores') fetchLutadores();
+    }
+
+
+    // ==========================================
+    // CRUD APOSTADORES
+    // ==========================================
+    
+    async function fetchApostadores() {
+      const tbody = document.getElementById('apostadores-tbody');
+      tbody.innerHTML = `<tr><td colspan="5" style="text-align: center;">Carregando das instâncias...</td></tr>`;
+      try {
+        const response = await fetch('/api/apostadores', {
+          headers: { 'Authorization': `Bearer ${currentToken}` }
+        });
+        if (response.ok) {
+          const data = await response.json();
+          renderTableApostadores(data);
+        } else if (response.status === 401) {
+          document.getElementById('logout-btn').click();
+        } else {
+          tbody.innerHTML = `<tr><td colspan="5" style="color:var(--error); text-align:center;">Erro ao carregar dados do Gateway.</td></tr>`;
+        }
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="5" style="color:var(--error); text-align:center;">Erro de conexão com o Gateway.</td></tr>`;
+      }
+    }
+
+    function renderTableApostadores(dados) {
+      const tbody = document.getElementById('apostadores-tbody');
+      if (!dados || dados.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-secondary);">Nenhum apostador encontrado nas APIs.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = dados.map(ap => `
+        <tr>
+          <td style="font-family: monospace; color: var(--text-secondary);">${ap.id}</td>
+          <td><strong>${ap.nome}</strong></td>
+          <td>${ap.idade}</td>
+          <td style="font-family: monospace;">${ap.chavePix || ap.chave_pix || 'N/A'}</td>
+          <td class="actions">
+            <button class="btn btn-primary btn-small" onclick="openModalApostador('edit', '${ap.id}', '${ap.nome}', ${ap.idade}, '${ap.chavePix || ap.chave_pix}')">Editar</button>
+            <button class="btn btn-danger btn-small" onclick="deleteApostador('${ap.id}')">Excluir</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    document.getElementById('apostador-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const id = document.getElementById('ap-form-id').value;
+      const payload = {
+        nome: document.getElementById('ap-form-nome').value,
+        idade: parseInt(document.getElementById('ap-form-idade').value),
+        chavePix: document.getElementById('ap-form-pix').value
+      };
+
+      const isEdit = id !== "";
+      const url = isEdit ? `/api/apostadores/${id}` : '/api/apostadores';
+      const method = isEdit ? 'PUT' : 'POST';
+      
+      const btn = document.getElementById('ap-submit-btn');
+      const originalText = btn.innerHTML;
+      btn.innerHTML = 'Enviando p/ APIs...';
+      btn.disabled = true;
+
+      try {
+        const response = await fetch(url, {
+          method: method,
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${currentToken}` },
+          body: JSON.stringify(payload)
+        });
+
+        if (response.ok) {
+          closeModal('modal-apostador');
+          fetchApostadores();
+        } else {
+          const err = await response.json();
+          alert("Erro: " + (err.erro || err.mensagem || "Falha na operação"));
+        }
+      } catch (err) {
+        alert("Erro de conexão ao enviar dados.");
+      } finally {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+      }
+    });
+
+    async function deleteApostador(id) {
+      if (!confirm(`Tem certeza que deseja excluir o apostador ID ${id} de TODAS as instâncias?`)) return;
+      try {
+        const response = await fetch(`/api/apostadores/${id}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${currentToken}` }
+        });
+        if (response.ok) fetchApostadores();
+        else alert("Erro ao excluir o apostador.");
+      } catch (err) { alert("Erro de conexão ao excluir."); }
+    }
+
+
+    // ==========================================
+    // CRUD LUTADORES
+    // ==========================================
+
+    async function fetchLutadores() {
+      const tbody = document.getElementById('lutadores-tbody');
+      tbody.innerHTML = `<tr><td colspan="5" style="text-align: center;">Carregando (A API no Render pode demorar até 50s para acordar)...</td></tr>`;
+      try {
+        const response = await fetch('/api/lutadores', {
+          headers: { 'Authorization': `Bearer ${currentToken}` }
+        });
+        if (response.ok) {
+          const data = await response.json();
+          renderTableLutadores(data);
+        } else if (response.status === 401) {
+          document.getElementById('logout-btn').click();
+        } else {
+          tbody.innerHTML = `<tr><td colspan="5" style="color:var(--error); text-align:center;">Erro ao carregar dados do Gateway.</td></tr>`;
+        }
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="5" style="color:var(--error); text-align:center;">Tempo esgotado ou Erro de conexão com o Gateway.</td></tr>`;
+      }
+    }
+
+    function renderTableLutadores(dados) {
+      const tbody = document.getElementById('lutadores-tbody');
+      if (!dados || dados.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-secondary);">Nenhum lutador encontrado nas APIs.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = dados.map(lu => `
+        <tr>
+          <td style="font-family: monospace; color: var(--text-secondary);">${lu.id}</td>
+          <td><strong>${lu.nome || 'N/A'}</strong></td>
+          <td><span class="btn-success btn-small" style="background:none; padding:0;">${lu.categoria || 'N/A'}</span></td>
+          <td>${lu.apelido || ''}</td>
+          <td>${lu.arte || ''}</td>
+          <td class="actions">
+            <button class="btn btn-primary btn-small" onclick="openModalLutador('edit', '${lu.id}', '${lu.nome || ''}', '${lu.categoria || ''}', '${lu.apelido || ''}', '${lu.arte || ''}')">Editar</button>
+            <button class="btn btn-danger btn-small" onclick="deleteLutador('${lu.id}')">Excluir</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    document.getElementById('lutador-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const id = document.getElementById('lu-form-id').value;
+      const payload = {
+        nome: document.getElementById('lu-form-nome').value,
+        categoria: document.getElementById('lu-form-categoria').value,
+        apelido: document.getElementById('lu-form-apelido').value,
+        arte: document.getElementById('lu-form-arte').value
+      };
+
+      const isEdit = id !== "";
+      const url = isEdit ? `/api/lutadores/${id}` : '/api/lutadores';
+      const method = isEdit ? 'PUT' : 'POST';
+      
+      const btn = document.getElementById('lu-submit-btn');
+      const originalText = btn.innerHTML;
+      btn.innerHTML = 'Enviando p/ APIs...';
+      btn.disabled = true;
+
+      try {
+        const response = await fetch(url, {
+          method: method,
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${currentToken}` },
+          body: JSON.stringify(payload)
+        });
+
+        if (response.ok) {
+          closeModal('modal-lutador');
+          fetchLutadores();
+        } else {
+          const err = await response.json();
+          alert("Erro: " + (err.erro || err.mensagem || "Falha na operação"));
+        }
+      } catch (err) {
+        alert("Erro de conexão ao enviar dados.");
+      } finally {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+      }
+    });
+
+    async function deleteLutador(id) {
+      if (!confirm(`Tem certeza que deseja excluir o lutador ID ${id}?`)) return;
+      try {
+        const response = await fetch(`/api/lutadores/${id}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${currentToken}` }
+        });
+        if (response.ok) fetchLutadores();
+        else alert("Erro ao excluir lutador.");
+      } catch (err) { alert("Erro de conexão ao excluir."); }
+    }
+
+
+    // --- CONTROLES DE MODAIS ---
+    function openModalApostador(mode, id = '', nome = '', idade = '', pix = '') {
+      document.getElementById('modal-title-apostador').textContent = mode === 'edit' ? 'Editar Apostador' : 'Novo Apostador';
+      document.getElementById('ap-form-id').value = id;
+      document.getElementById('ap-form-nome').value = nome;
+      document.getElementById('ap-form-idade').value = idade;
+      document.getElementById('ap-form-pix').value = pix;
+      document.getElementById('modal-apostador').style.display = 'flex';
+    }
+
+    function openModalLutador(mode, id = '', nome = '', categoria = '', apelido = '', arte = '') {
+      document.getElementById('modal-title-lutador').textContent = mode === 'edit' ? 'Editar Lutador' : 'Novo Lutador';
+      document.getElementById('lu-form-id').value = id;
+      document.getElementById('lu-form-nome').value = nome;
+      document.getElementById('lu-form-categoria').value = categoria;
+      document.getElementById('lu-form-apelido').value = apelido;
+      document.getElementById('lu-form-arte').value = arte;
+      document.getElementById('modal-lutador').style.display = 'flex';
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).style.display = 'none';
+      if(modalId === 'modal-apostador') document.getElementById('apostador-form').reset();
+      if(modalId === 'modal-lutador') document.getElementById('lutador-form').reset();
+    }
+  </script>
+</body>
+</html>
