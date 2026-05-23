@@ -62,13 +62,33 @@
     /* Formulários e Inputs */
     .form-group { margin-bottom: 1.5rem; }
     .form-group label { display: block; margin-bottom: 0.5rem; font-size: 0.9rem; color: var(--text-secondary); }
-    .form-group input {
+    .form-group input, .form-group select {
       width: 100%; padding: 1rem; background: rgba(15, 23, 42, 0.6);
       border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px;
       color: var(--text-primary); font-size: 1rem; font-family: 'Outfit', sans-serif;
       outline: none; transition: all 0.3s ease;
     }
-    .form-group input:focus { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1); }
+    .form-group input:focus, .form-group select:focus { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1); }
+    .form-group select { appearance: none; cursor: pointer; }
+    .form-group select option { background: #1e293b; color: var(--text-primary); }
+    .form-group select:disabled { opacity: 0.5; cursor: wait; }
+
+    /* Status bar de instâncias */
+    .instance-status-bar { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem; min-height: 28px; }
+    .status-pill {
+      display: inline-flex; align-items: center; gap: 0.35rem;
+      padding: 0.25rem 0.75rem; border-radius: 999px; font-size: 0.78rem; font-weight: 600;
+    }
+    .status-pill.online  { background: rgba(16,185,129,0.15); color: #10b981; border: 1px solid rgba(16,185,129,0.3); }
+    .status-pill.offline { background: rgba(239,68,68,0.1);   color: #ef4444; border: 1px solid rgba(239,68,68,0.25); }
+    .status-pill .dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+
+    /* Badge de origem em cada linha */
+    .source-badge {
+      display: inline-block; font-size: 0.68rem; font-weight: 600; padding: 0.1rem 0.45rem;
+      border-radius: 4px; margin-left: 0.4rem; background: rgba(59,130,246,0.15);
+      color: #60a5fa; border: 1px solid rgba(59,130,246,0.25); vertical-align: middle;
+    }
 
     /* Botões */
     .btn {
@@ -158,16 +178,17 @@
     <div class="menu-tabs">
       <div class="tab active" id="tab-apostadores" onclick="switchTab('apostadores')">Apostadores</div>
       <div class="tab" id="tab-lutadores" onclick="switchTab('lutadores')">Lutadores</div>
-      <div class="tab" onclick="alert('Funcionalidade em desenvolvimento para Lutas!')">Lutas</div>
-      <div class="tab" onclick="alert('Funcionalidade em desenvolvimento para Apostas!')">Apostas</div>
+      <div class="tab" id="tab-lutas" onclick="switchTab('lutas')">Lutas</div>
+      <div class="tab" id="tab-apostas" onclick="switchTab('apostas')">Apostas</div>
     </div>
 
     <!-- ============================== Seção: Apostadores ============================== -->
     <div id="section-apostadores">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
         <p style="color: var(--text-secondary);">Gerencie os Apostadores unificados de todas as APIs.</p>
         <button class="btn btn-success btn-small" onclick="openModalApostador('add')">+ Novo Apostador</button>
       </div>
+      <div class="instance-status-bar" id="status-bar-apostadores"></div>
 
       <div class="table-container">
         <table>
@@ -187,12 +208,40 @@
       </div>
     </div>
 
+    <!-- ============================== Seção: Lutas ============================== -->
+    <div id="section-lutas" style="display: none;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+        <p style="color: var(--text-secondary);">Gerencie as Lutas das duas APIs (RSA Auth).</p>
+        <button class="btn btn-success btn-small" onclick="openModalLuta('add')">+ Nova Luta</button>
+      </div>
+      <div class="instance-status-bar" id="status-bar-lutas"></div>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Data</th>
+              <th>Horário</th>
+              <th>Lutador 1</th>
+              <th>Lutador 2</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody id="lutas-tbody">
+            <tr><td colspan="6" style="text-align: center;">Carregando dados da API...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
     <!-- ============================== Seção: Lutadores ============================== -->
     <div id="section-lutadores" style="display: none;">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
         <p style="color: var(--text-secondary);">Integração Externa com API de Lutadores (Render)</p>
         <button class="btn btn-success btn-small" onclick="openModalLutador('add')">+ Novo Lutador</button>
       </div>
+      <div class="instance-status-bar" id="status-bar-lutadores"></div>
 
       <div class="table-container">
         <table>
@@ -213,6 +262,71 @@
       </div>
     </div>
 
+    <!-- ============================== Seção: Apostas ============================== -->
+    <div id="section-apostas" style="display: none;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+        <p style="color: var(--text-secondary);">Apostas registradas — NanaDeBets (RSA+AES)</p>
+        <button class="btn btn-success btn-small" onclick="openModalAposta('add')">+ Nova Aposta</button>
+      </div>
+      <div class="instance-status-bar" id="status-bar-apostas"></div>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Apostador</th>
+              <th>Luta</th>
+              <th>Lutador 1</th>
+              <th>Lutador 2</th>
+              <th>Valor (R$)</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody id="apostas-tbody">
+            <tr><td colspan="7" style="text-align: center;">Carregando dados da API...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ============================== MODAL LUTA ============================== -->
+  <div class="modal-overlay" id="modal-luta">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="modal-title-luta">Nova Luta</h3>
+        <button class="modal-close" onclick="closeModal('modal-luta')">&times;</button>
+      </div>
+      <form id="luta-form">
+        <input type="hidden" id="lt-form-id">
+        <div class="form-group">
+          <label>Data</label>
+          <input type="date" id="lt-form-data" required>
+        </div>
+        <div class="form-group">
+          <label>Horário</label>
+          <input type="time" id="lt-form-horario" required>
+        </div>
+        <div class="form-group">
+          <label>Lutador 1</label>
+          <select id="lt-form-lutador1" required>
+            <option value="">Carregando lutadores...</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Lutador 2</label>
+          <select id="lt-form-lutador2" required>
+            <option value="">Carregando lutadores...</option>
+          </select>
+        </div>
+        <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+          <button type="button" class="btn btn-danger" onclick="closeModal('modal-luta')">Cancelar</button>
+          <button type="submit" class="btn btn-success" id="lt-submit-btn">Salvar Luta</button>
+        </div>
+      </form>
+    </div>
   </div>
 
   <!-- ============================== MODAL APOSTADOR ============================== -->
@@ -278,7 +392,57 @@
   </div>
 
 
+  <!-- ============================== MODAL APOSTA ============================== -->
+  <div class="modal-overlay" id="modal-aposta">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="modal-title-aposta">Nova Aposta</h3>
+        <button class="modal-close" onclick="closeModal('modal-aposta')">&times;</button>
+      </div>
+      <form id="aposta-form">
+        <input type="hidden" id="aps-form-id">
+        <div class="form-group" id="aps-group-apostador">
+          <label>Apostador</label>
+          <select id="aps-form-apostador" required>
+            <option value="">Carregando apostadores...</option>
+          </select>
+        </div>
+        <div class="form-group" id="aps-group-luta">
+          <label>Luta</label>
+          <select id="aps-form-luta" required>
+            <option value="">Carregando lutas...</option>
+          </select>
+        </div>
+        <div class="form-group" id="aps-group-lutador1">
+          <label>Lutador 1</label>
+          <select id="aps-form-lutador1" required>
+            <option value="">Carregando lutadores...</option>
+          </select>
+        </div>
+        <div class="form-group" id="aps-group-lutador2">
+          <label>Lutador 2</label>
+          <select id="aps-form-lutador2" required>
+            <option value="">Carregando lutadores...</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Valor (R$)</label>
+          <input type="number" id="aps-form-valor" min="0.01" step="0.01" required>
+        </div>
+        <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+          <button type="button" class="btn btn-danger" onclick="closeModal('modal-aposta')">Cancelar</button>
+          <button type="submit" class="btn btn-success" id="aps-submit-btn">Salvar Aposta</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <script>
+    function sourceBadges(item) {
+      const sources = item._sources || (item._source ? [item._source] : []);
+      return sources.map(s => `<span class="source-badge">${s}</span>`).join('');
+    }
+
     // Referências DOM
     const loginForm = document.getElementById('login-form');
     const loginContainer = document.getElementById('login-container');
@@ -346,22 +510,34 @@
       dashboard.style.display = 'block';
     }
 
+    // --- STATUS DAS INSTÂNCIAS ---
+    function renderStatusBar(category, instances) {
+      const bar = document.getElementById(`status-bar-${category}`);
+      if (!bar || !instances) return;
+      bar.innerHTML = instances.map(inst => `
+        <span class="status-pill ${inst.status}" title="${inst.url}">
+          <span class="dot"></span>
+          ${inst.name}
+          ${inst.status === 'online' && inst.count != null ? `<small style="opacity:0.7">(${inst.count})</small>` : ''}
+          ${inst.status === 'offline' ? '<small style="opacity:0.7">(offline)</small>' : ''}
+        </span>
+      `).join('');
+    }
+
     // --- CONTROLE DE ABAS ---
     function switchTab(tabName) {
-      // Ocultar todas as seções
-      document.getElementById('section-apostadores').style.display = 'none';
-      document.getElementById('section-lutadores').style.display = 'none';
-      
-      // Remover classe active de todas as abas
-      document.getElementById('tab-apostadores').classList.remove('active');
-      document.getElementById('tab-lutadores').classList.remove('active');
-      
-      // Mostrar seção correspondente e ativar aba
+      ['apostadores', 'lutadores', 'lutas', 'apostas'].forEach(name => {
+        document.getElementById('section-' + name).style.display = 'none';
+        document.getElementById('tab-' + name).classList.remove('active');
+      });
+
       document.getElementById('section-' + tabName).style.display = 'block';
       document.getElementById('tab-' + tabName).classList.add('active');
 
       if(tabName === 'apostadores') fetchApostadores();
       if(tabName === 'lutadores') fetchLutadores();
+      if(tabName === 'lutas') fetchLutas();
+      if(tabName === 'apostas') fetchApostas();
     }
 
 
@@ -377,8 +553,9 @@
           headers: { 'Authorization': `Bearer ${currentToken}` }
         });
         if (response.ok) {
-          const data = await response.json();
-          renderTableApostadores(data);
+          const result = await response.json();
+          renderStatusBar('apostadores', result.instances);
+          renderTableApostadores(result.data);
         } else if (response.status === 401) {
           document.getElementById('logout-btn').click();
         } else {
@@ -398,7 +575,7 @@
 
       tbody.innerHTML = dados.map(ap => `
         <tr>
-          <td style="font-family: monospace; color: var(--text-secondary);">${ap.id}</td>
+          <td style="font-family: monospace; color: var(--text-secondary);">${ap.id}${sourceBadges(ap)}</td>
           <td><strong>${ap.nome}</strong></td>
           <td>${ap.idade}</td>
           <td style="font-family: monospace;">${ap.chavePix || ap.chave_pix || 'N/A'}</td>
@@ -414,10 +591,12 @@
       e.preventDefault();
       
       const id = document.getElementById('ap-form-id').value;
+      const pix = document.getElementById('ap-form-pix').value;
       const payload = {
         nome: document.getElementById('ap-form-nome').value,
         idade: parseInt(document.getElementById('ap-form-idade').value),
-        chavePix: document.getElementById('ap-form-pix').value
+        chavePix: pix,   // Azure Node API
+        chave_pix: pix   // FastAPI (ApiSD)
       };
 
       const isEdit = id !== "";
@@ -470,34 +649,35 @@
 
     async function fetchLutadores() {
       const tbody = document.getElementById('lutadores-tbody');
-      tbody.innerHTML = `<tr><td colspan="5" style="text-align: center;">Carregando (A API no Render pode demorar até 50s para acordar)...</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="6" style="text-align: center;">Carregando (A API no Render pode demorar até 50s para acordar)...</td></tr>`;
       try {
         const response = await fetch('/api/lutadores', {
           headers: { 'Authorization': `Bearer ${currentToken}` }
         });
         if (response.ok) {
-          const data = await response.json();
-          renderTableLutadores(data);
+          const result = await response.json();
+          renderStatusBar('lutadores', result.instances);
+          renderTableLutadores(result.data);
         } else if (response.status === 401) {
           document.getElementById('logout-btn').click();
         } else {
-          tbody.innerHTML = `<tr><td colspan="5" style="color:var(--error); text-align:center;">Erro ao carregar dados do Gateway.</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="6" style="color:var(--error); text-align:center;">Erro ao carregar dados do Gateway.</td></tr>`;
         }
       } catch (err) {
-        tbody.innerHTML = `<tr><td colspan="5" style="color:var(--error); text-align:center;">Tempo esgotado ou Erro de conexão com o Gateway.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6" style="color:var(--error); text-align:center;">Tempo esgotado ou Erro de conexão com o Gateway.</td></tr>`;
       }
     }
 
     function renderTableLutadores(dados) {
       const tbody = document.getElementById('lutadores-tbody');
       if (!dados || dados.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-secondary);">Nenhum lutador encontrado nas APIs.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--text-secondary);">Nenhum lutador encontrado nas APIs.</td></tr>`;
         return;
       }
 
       tbody.innerHTML = dados.map(lu => `
         <tr>
-          <td style="font-family: monospace; color: var(--text-secondary);">${lu.id}</td>
+          <td style="font-family: monospace; color: var(--text-secondary);">${lu.id}${sourceBadges(lu)}</td>
           <td><strong>${lu.nome || 'N/A'}</strong></td>
           <td><span class="btn-success btn-small" style="background:none; padding:0;">${lu.categoria || 'N/A'}</span></td>
           <td>${lu.apelido || ''}</td>
@@ -565,6 +745,208 @@
     }
 
 
+    // ==========================================
+    // CRUD LUTAS
+    // ==========================================
+
+    async function fetchLutas() {
+      const tbody = document.getElementById('lutas-tbody');
+      tbody.innerHTML = `<tr><td colspan="6" style="text-align: center;">Carregando das instâncias...</td></tr>`;
+      try {
+        const response = await fetch('/api/lutas', {
+          headers: { 'Authorization': `Bearer ${currentToken}` }
+        });
+        if (response.ok) {
+          const result = await response.json();
+          renderStatusBar('lutas', result.instances);
+          renderTableLutas(result.data);
+        } else if (response.status === 401) {
+          document.getElementById('logout-btn').click();
+        } else {
+          tbody.innerHTML = `<tr><td colspan="6" style="color:var(--error); text-align:center;">Erro ao carregar dados do Gateway.</td></tr>`;
+        }
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="6" style="color:var(--error); text-align:center;">Erro de conexão com o Gateway.</td></tr>`;
+      }
+    }
+
+    function renderTableLutas(dados) {
+      const tbody = document.getElementById('lutas-tbody');
+      if (!dados || dados.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--text-secondary);">Nenhuma luta encontrada.</td></tr>`;
+        return;
+      }
+      tbody.innerHTML = dados.map(lt => `
+        <tr>
+          <td style="font-family: monospace; color: var(--text-secondary);">${lt.id}${sourceBadges(lt)}</td>
+          <td>${lt.data || 'N/A'}</td>
+          <td>${lt.horario || 'N/A'}</td>
+          <td>${lt.id_lutador1 || lt.lutador1 || 'N/A'}</td>
+          <td>${lt.id_lutador2 || lt.lutador2 || 'N/A'}</td>
+          <td class="actions">
+            <button class="btn btn-primary btn-small" onclick="openModalLuta('edit', ${lt.id}, '${lt.data || ''}', '${lt.horario || ''}', ${lt.id_lutador1 || lt.lutador1 || 0}, ${lt.id_lutador2 || lt.lutador2 || 0})">Editar</button>
+            <button class="btn btn-danger btn-small" onclick="deleteLuta(${lt.id})">Cancelar</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    document.getElementById('luta-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = document.getElementById('lt-form-id').value;
+      const payload = {
+        data: document.getElementById('lt-form-data').value,
+        horario: document.getElementById('lt-form-horario').value,
+        id_lutador1: parseInt(document.getElementById('lt-form-lutador1').value),
+        id_lutador2: parseInt(document.getElementById('lt-form-lutador2').value)
+      };
+
+      const isEdit = id !== "";
+      const url = isEdit ? `/api/lutas/${id}` : '/api/lutas';
+      const method = isEdit ? 'PUT' : 'POST';
+
+      const btn = document.getElementById('lt-submit-btn');
+      const originalText = btn.innerHTML;
+      btn.innerHTML = 'Enviando p/ APIs...';
+      btn.disabled = true;
+
+      try {
+        const response = await fetch(url, {
+          method,
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${currentToken}` },
+          body: JSON.stringify(payload)
+        });
+        if (response.ok) {
+          closeModal('modal-luta');
+          fetchLutas();
+        } else {
+          const err = await response.json();
+          alert("Erro: " + (err.erro || err.detail || JSON.stringify(err)));
+        }
+      } catch (err) {
+        alert("Erro de conexão ao enviar dados.");
+      } finally {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+      }
+    });
+
+    async function deleteLuta(id) {
+      if (!confirm(`Tem certeza que deseja cancelar a luta ID ${id} em todas as instâncias?`)) return;
+      try {
+        const response = await fetch(`/api/lutas/${id}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${currentToken}` }
+        });
+        if (response.ok) fetchLutas();
+        else alert("Erro ao cancelar a luta.");
+      } catch (err) { alert("Erro de conexão ao cancelar."); }
+    }
+
+    // ==========================================
+    // CRUD APOSTAS
+    // ==========================================
+
+    async function fetchApostas() {
+      const tbody = document.getElementById('apostas-tbody');
+      tbody.innerHTML = `<tr><td colspan="7" style="text-align: center;">Carregando das instâncias (RSA+AES)...</td></tr>`;
+      try {
+        const response = await fetch('/api/apostas', {
+          headers: { 'Authorization': `Bearer ${currentToken}` }
+        });
+        if (response.ok) {
+          const result = await response.json();
+          renderStatusBar('apostas', result.instances);
+          renderTableApostas(result.data);
+        } else if (response.status === 401) {
+          document.getElementById('logout-btn').click();
+        } else {
+          const err = await response.json().catch(() => ({}));
+          tbody.innerHTML = `<tr><td colspan="7" style="color:var(--error); text-align:center;">Erro: ${err.erro || 'Falha ao carregar apostas.'}</td></tr>`;
+        }
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="7" style="color:var(--error); text-align:center;">Erro de conexão com o Gateway.</td></tr>`;
+      }
+    }
+
+    function renderTableApostas(dados) {
+      const tbody = document.getElementById('apostas-tbody');
+      if (!dados || dados.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-secondary);">Nenhuma aposta encontrada.</td></tr>`;
+        return;
+      }
+      tbody.innerHTML = dados.map(ap => `
+        <tr>
+          <td style="font-family: monospace; color: var(--text-secondary);">${ap.id}${sourceBadges(ap)}</td>
+          <td>${ap.idApostador ?? ap.id_apostador ?? 'N/A'}</td>
+          <td>${ap.idLuta ?? ap.id_luta ?? 'N/A'}</td>
+          <td>${ap.idLutador1 ?? ap.id_lutador ?? 'N/A'}</td>
+          <td>${ap.idLutador2 ?? 'N/A'}</td>
+          <td>R$ ${parseFloat(ap.valor ?? 0).toFixed(2)}</td>
+          <td class="actions">
+            <button class="btn btn-primary btn-small" onclick="openModalAposta('edit', ${ap.id}, ${ap.idApostador ?? ap.id_apostador ?? 0}, ${ap.idLuta ?? ap.id_luta ?? 0}, ${ap.idLutador1 ?? ap.id_lutador ?? 0}, ${ap.idLutador2 ?? 0}, ${ap.valor ?? 0})">Editar</button>
+            <button class="btn btn-danger btn-small" onclick="deleteAposta(${ap.id})">Excluir</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    document.getElementById('aposta-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = document.getElementById('aps-form-id').value;
+      const isEdit = id !== "";
+
+      const payload = isEdit
+        ? { valor: parseFloat(document.getElementById('aps-form-valor').value) }
+        : {
+            idApostador: parseInt(document.getElementById('aps-form-apostador').value),
+            idLuta: parseInt(document.getElementById('aps-form-luta').value),
+            idLutador1: parseInt(document.getElementById('aps-form-lutador1').value),
+            idLutador2: parseInt(document.getElementById('aps-form-lutador2').value),
+            valor: parseFloat(document.getElementById('aps-form-valor').value)
+          };
+
+      const url = isEdit ? `/api/apostas/${id}` : '/api/apostas';
+      const method = isEdit ? 'PUT' : 'POST';
+
+      const btn = document.getElementById('aps-submit-btn');
+      const originalText = btn.innerHTML;
+      btn.innerHTML = 'Cifrando e enviando...';
+      btn.disabled = true;
+
+      try {
+        const response = await fetch(url, {
+          method,
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${currentToken}` },
+          body: JSON.stringify(payload)
+        });
+        if (response.ok) {
+          closeModal('modal-aposta');
+          fetchApostas();
+        } else {
+          const err = await response.json().catch(() => ({}));
+          alert("Erro: " + (err.erro || err.mensagem || "Falha na operação"));
+        }
+      } catch (err) {
+        alert("Erro de conexão ao enviar dados.");
+      } finally {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+      }
+    });
+
+    async function deleteAposta(id) {
+      if (!confirm(`Tem certeza que deseja excluir a aposta ID ${id}?`)) return;
+      try {
+        const response = await fetch(`/api/apostas/${id}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${currentToken}` }
+        });
+        if (response.ok) fetchApostas();
+        else alert("Erro ao excluir aposta.");
+      } catch (err) { alert("Erro de conexão ao excluir."); }
+    }
+
     // --- CONTROLES DE MODAIS ---
     function openModalApostador(mode, id = '', nome = '', idade = '', pix = '') {
       document.getElementById('modal-title-apostador').textContent = mode === 'edit' ? 'Editar Apostador' : 'Novo Apostador';
@@ -585,10 +967,121 @@
       document.getElementById('modal-lutador').style.display = 'flex';
     }
 
+    async function loadLutaSelects(preselect1 = '', preselect2 = '') {
+      ['lt-form-lutador1', 'lt-form-lutador2'].forEach(id => {
+        document.getElementById(id).innerHTML = '<option value="">Carregando...</option>';
+        document.getElementById(id).disabled = true;
+      });
+
+      try {
+        const res = await fetch('/api/lutadores', { headers: { 'Authorization': `Bearer ${currentToken}` } });
+        if (res.ok) {
+          const result = await res.json();
+          const lutadores = Array.isArray(result) ? result : (result.data || []);
+          const opts = '<option value="">Selecione o lutador</option>' +
+            lutadores.map(l => `<option value="${l.id}">#${l.id} — ${l.nome || 'N/A'}</option>`).join('');
+          ['lt-form-lutador1', 'lt-form-lutador2'].forEach(id => {
+            document.getElementById(id).innerHTML = opts;
+            document.getElementById(id).disabled = false;
+          });
+          if (preselect1) document.getElementById('lt-form-lutador1').value = preselect1;
+          if (preselect2) document.getElementById('lt-form-lutador2').value = preselect2;
+        } else {
+          ['lt-form-lutador1', 'lt-form-lutador2'].forEach(id => {
+            document.getElementById(id).innerHTML = '<option value="">Erro ao carregar</option>';
+            document.getElementById(id).disabled = false;
+          });
+        }
+      } catch {
+        ['lt-form-lutador1', 'lt-form-lutador2'].forEach(id => {
+          document.getElementById(id).innerHTML = '<option value="">Erro de conexão</option>';
+          document.getElementById(id).disabled = false;
+        });
+      }
+    }
+
+    function openModalLuta(mode, id = '', data = '', horario = '', lutador1 = '', lutador2 = '') {
+      document.getElementById('modal-title-luta').textContent = mode === 'edit' ? 'Editar Luta' : 'Nova Luta';
+      document.getElementById('lt-form-id').value = id;
+      document.getElementById('lt-form-data').value = data;
+      document.getElementById('lt-form-horario').value = horario;
+      document.getElementById('modal-luta').style.display = 'flex';
+      loadLutaSelects(lutador1, lutador2);
+    }
+
+    async function loadApostaSelects() {
+      const ids = ['aps-form-apostador', 'aps-form-luta', 'aps-form-lutador1', 'aps-form-lutador2'];
+      ids.forEach(id => {
+        document.getElementById(id).innerHTML = '<option value="">Carregando...</option>';
+        document.getElementById(id).disabled = true;
+      });
+
+      const h = { 'Authorization': `Bearer ${currentToken}` };
+      const [apRes, ltRes, luRes] = await Promise.allSettled([
+        fetch('/api/apostadores', { headers: h }).then(r => r.json()),
+        fetch('/api/lutas',       { headers: h }).then(r => r.json()),
+        fetch('/api/lutadores',   { headers: h }).then(r => r.json()),
+      ]);
+
+      const sel = (id, opts) => {
+        const el = document.getElementById(id);
+        el.innerHTML = opts;
+        el.disabled = false;
+      };
+
+      const apData = apRes.status === 'fulfilled' ? (Array.isArray(apRes.value) ? apRes.value : apRes.value?.data) : null;
+      const ltData = ltRes.status === 'fulfilled' ? (Array.isArray(ltRes.value) ? ltRes.value : ltRes.value?.data) : null;
+      const luData = luRes.status === 'fulfilled' ? (Array.isArray(luRes.value) ? luRes.value : luRes.value?.data) : null;
+
+      if (Array.isArray(apData)) {
+        sel('aps-form-apostador', '<option value="">Selecione o apostador</option>' +
+          apData.map(a => `<option value="${a.id}">#${a.id} — ${a.nome}</option>`).join(''));
+      } else {
+        sel('aps-form-apostador', '<option value="">Erro ao carregar</option>');
+      }
+
+      if (Array.isArray(ltData)) {
+        sel('aps-form-luta', '<option value="">Selecione a luta</option>' +
+          ltData.map(l => `<option value="${l.id}">#${l.id} — ${l.data || ''} ${l.horario || ''}</option>`).join(''));
+      } else {
+        sel('aps-form-luta', '<option value="">Erro ao carregar</option>');
+      }
+
+      if (Array.isArray(luData)) {
+        const opts = '<option value="">Selecione o lutador</option>' +
+          luData.map(l => `<option value="${l.id}">#${l.id} — ${l.nome || 'N/A'}</option>`).join('');
+        sel('aps-form-lutador1', opts);
+        sel('aps-form-lutador2', opts);
+      } else {
+        sel('aps-form-lutador1', '<option value="">Erro ao carregar</option>');
+        sel('aps-form-lutador2', '<option value="">Erro ao carregar</option>');
+      }
+    }
+
+    function openModalAposta(mode, id = '', idApostador = '', idLuta = '', idLutador1 = '', idLutador2 = '', valor = '') {
+      const isEdit = mode === 'edit';
+      document.getElementById('modal-title-aposta').textContent = isEdit ? 'Editar Aposta (valor)' : 'Nova Aposta';
+      document.getElementById('aps-form-id').value = id;
+      document.getElementById('aps-form-apostador').value = idApostador;
+      document.getElementById('aps-form-luta').value = idLuta;
+      document.getElementById('aps-form-lutador1').value = idLutador1;
+      document.getElementById('aps-form-lutador2').value = idLutador2;
+      document.getElementById('aps-form-valor').value = valor;
+      // Em edição só o valor pode ser alterado (restrição da API nanadebets)
+      ['apostador', 'luta', 'lutador1', 'lutador2'].forEach(f => {
+        document.getElementById(`aps-group-${f}`).style.display = isEdit ? 'none' : 'block';
+        document.getElementById(`aps-form-${f}`).required = !isEdit;
+      });
+      document.getElementById('modal-aposta').style.display = 'flex';
+      if (!isEdit) loadApostaSelects();
+    }
+
     function closeModal(modalId) {
       document.getElementById(modalId).style.display = 'none';
       if(modalId === 'modal-apostador') document.getElementById('apostador-form').reset();
       if(modalId === 'modal-lutador') document.getElementById('lutador-form').reset();
+      if(modalId === 'modal-luta') document.getElementById('luta-form').reset();
+      if(modalId === 'modal-aposta') document.getElementById('aposta-form').reset();
     }
   </script>
 </body>
