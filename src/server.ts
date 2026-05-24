@@ -61,6 +61,8 @@ type InstanceConfig = {
   useQueryParams?: boolean;      // cria/atualiza via query string, sem body JSON
   handshakeEndpoint?: string;    // ex: "/handshake" — registra nossa chave pública antes de usar
   snakeCasePayload?: boolean;    // converte payload camelCase → snake_case antes de enviar
+  shortLutadorFields?: boolean;  // usa lutador1/lutador2 em vez de id_lutador1/id_lutador2
+  singleLutadorField?: boolean;  // usa id_lutador (singular) em vez de id_lutador1/id_lutador2
 };
 
 // Lista de instâncias (Microserviços) com suas credenciais de acesso individuais
@@ -81,8 +83,7 @@ const INSTANCES: Record<string, InstanceConfig[]> = {
   ],
   lutas: [
     { url: "https://betting-api-beta.vercel.app", user: "", pass: "", trailingSlash: true },
-    { url: "https://betting-api-lutas.vercel.app", user: "", pass: "", trailingSlash: true },
-    { url: "https://bet3m-production.up.railway.app", user: "", pass: "", apiKey: "bet3M-UENP" }
+    { url: "https://bet3m-production.up.railway.app", user: "", pass: "", apiKey: "bet3M-UENP", shortLutadorFields: true }
   ],
   apostas: [
     { url: "http://187.77.235.119:5555", user: "", pass: "", useEncryption: true },
@@ -91,7 +92,8 @@ const INSTANCES: Record<string, InstanceConfig[]> = {
       user: process.env.APOSTAS_USER || "",
       pass: process.env.APOSTAS_PASS || "",
       loginPath: "/auth/login",
-      snakeCasePayload: true
+      snakeCasePayload: true,
+      singleLutadorField: true
     }
   ]
 };
@@ -178,8 +180,12 @@ function encryptPayload(publicKeyPem: string, data: any): object {
 app.post("/login", (req: Request, res: Response): any => {
   const { username, password } = req.body;
   if (username === "admin" && password === "admin") {
-    const token = jwt.sign({ id: 1, role: "integrador" }, SECRET, { expiresIn: "2h" });
-    return res.json({ token });
+    const token = jwt.sign({ id: 1, role: "admin" }, SECRET, { expiresIn: "2h" });
+    return res.json({ token, role: "admin" });
+  }
+  if (username === "user" && password === "user") {
+    const token = jwt.sign({ id: 2, role: "user" }, SECRET, { expiresIn: "2h" });
+    return res.json({ token, role: "user" });
   }
   return res.status(401).json({ erro: "Credenciais inválidas" });
 });
@@ -246,6 +252,19 @@ function getShortName(url: string): string {
   }
 }
 
+// --- LOGS DE REQUISIÇÕES ---
+type LogEntry = {
+  id: number; ts: string; method: string; path: string;
+  instance: string; instanceName: string;
+  status: 'ok' | 'erro'; ms: number; error?: string;
+};
+const logBuffer: LogEntry[] = [];
+let logSeq = 0;
+function addLog(e: Omit<LogEntry, 'id' | 'ts'>) {
+  logBuffer.unshift({ id: ++logSeq, ts: new Date().toISOString(), ...e });
+  if (logBuffer.length > 500) logBuffer.pop();
+}
+
 /*
   FUNÇÃO AUXILIAR: Buscar em TODAS as instâncias e Unificar os Dados (Merge)
 */
@@ -255,6 +274,7 @@ async function forwardGetRequest(category: string, urlPath: string) {
 
   const promises = targetInstances.map(async (instance) => {
     const name = getShortName(instance.url);
+    const _t0 = Date.now();
     try {
       if (instance.handshakeEndpoint) await ensureHandshake(instance);
 
@@ -294,12 +314,14 @@ async function forwardGetRequest(category: string, urlPath: string) {
         }
       }
 
+      addLog({ method: 'GET', path: urlPath, instance: instance.url, instanceName: name, status: 'ok', ms: Date.now() - _t0 });
       return { success: true, data: responseData, name, url: instance.url };
     } catch (err: any) {
       const detail = err.response
         ? `HTTP ${err.response.status}: ${JSON.stringify(err.response.data)}`
         : err.message;
       console.log(`[Integrador] Falha ao ler da instância: ${instance.url}${urlPath} — ${detail}`);
+      addLog({ method: 'GET', path: urlPath, instance: instance.url, instanceName: name, status: 'erro', ms: Date.now() - _t0, error: detail });
       return { success: false, data: null, name, url: instance.url };
     }
   });
@@ -359,6 +381,7 @@ async function replicateWriteRequest(category: string, method: string, urlPath: 
   if (!targetInstances || targetInstances.length === 0) throw new Error(`Nenhuma instância configurada para ${category}.`);
 
   const promises = targetInstances.map(async (instance) => {
+    const _t0 = Date.now();
     try {
       if (instance.handshakeEndpoint) await ensureHandshake(instance);
 
@@ -383,6 +406,14 @@ async function replicateWriteRequest(category: string, method: string, urlPath: 
       if (instance.apiKey) headers["X-API-KEY"] = instance.apiKey;
 
       let requestData = instance.snakeCasePayload ? toSnakeCase(data) : data;
+      if (instance.shortLutadorFields && requestData) {
+        const { id_lutador1, id_lutador2, ...rest } = requestData;
+        requestData = { ...rest, ...(id_lutador1 !== undefined && { lutador1: id_lutador1 }), ...(id_lutador2 !== undefined && { lutador2: id_lutador2 }) };
+      }
+      if (instance.singleLutadorField && requestData) {
+        const { id_lutador1, id_lutador2, ...rest } = requestData;
+        requestData = { ...rest, ...(id_lutador1 !== undefined && { id_lutador: id_lutador1 }) };
+      }
       let finalUrl = `${instance.url}${normalizedPath}`;
 
       if (instance.useQueryParams && requestData) {
@@ -417,12 +448,14 @@ async function replicateWriteRequest(category: string, method: string, urlPath: 
           responseData = decryptRsaChunks(responseData, getOrCreateSessionKey(instance.url).priv);
         } catch { handshakeCache.delete(instance.url); rsaSessionKeys.delete(instance.url); }
       }
+      addLog({ method, path: urlPath, instance: instance.url, instanceName: getShortName(instance.url), status: 'ok', ms: Date.now() - _t0 });
       return { status: "sucesso", instance: instance.url, data: responseData };
     } catch (err: any) {
       const detail = err.response
         ? `HTTP ${err.response.status}: ${JSON.stringify(err.response.data)}`
         : err.message;
       console.log(`[Integrador] Falha ao replicar para ${instance.url}${urlPath} — ${detail}`);
+      addLog({ method, path: urlPath, instance: instance.url, instanceName: getShortName(instance.url), status: 'erro', ms: Date.now() - _t0, error: detail });
       return { status: "erro", instance: instance.url, error: detail };
     }
   });
@@ -490,6 +523,10 @@ function setupCategoryRoutes(categoryName: string, endpoint: string) {
     }
   });
 }
+
+app.get("/api/logs", requireAuth, (_req: Request, res: Response) => {
+  res.json(logBuffer.slice(0, 200));
+});
 
 // Inicializando as rotas das 4 categorias exigidas no contrato
 setupCategoryRoutes("apostadores", "apostadores");

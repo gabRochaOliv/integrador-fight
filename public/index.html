@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -21,7 +22,11 @@
       --glow: rgba(59, 130, 246, 0.5);
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
     body {
       font-family: 'Outfit', sans-serif;
@@ -32,7 +37,7 @@
       align-items: flex-start;
       min-height: 100vh;
       overflow-y: auto;
-      background-image: 
+      background-image:
         radial-gradient(circle at 15% 50%, rgba(59, 130, 246, 0.15), transparent 25%),
         radial-gradient(circle at 85% 30%, rgba(139, 92, 246, 0.15), transparent 25%);
       padding: 2rem;
@@ -51,97 +56,492 @@
       position: relative;
       z-index: 10;
     }
-    .container-login { max-width: 420px; margin: auto; margin-top: 10vh; }
-    .container-dashboard { max-width: 1000px; display: none; }
+
+    .container-login {
+      max-width: 420px;
+      margin: auto;
+      margin-top: 10vh;
+    }
+
+    .container-dashboard {
+      max-width: 1000px;
+      display: none;
+    }
 
     /* Estilos de Textos e Headers */
-    .header { text-align: center; margin-bottom: 2.5rem; }
-    .header h1 { font-size: 2.2rem; font-weight: 800; background: linear-gradient(to right, #60a5fa, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .header p { color: var(--text-secondary); font-weight: 300; margin-top: 0.5rem; }
+    .header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .header h1 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      background: linear-gradient(to right, #60a5fa, #a78bfa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .header p {
+      color: var(--text-secondary);
+      font-weight: 300;
+      margin-top: 0.5rem;
+    }
 
     /* Formulários e Inputs */
-    .form-group { margin-bottom: 1.5rem; }
-    .form-group label { display: block; margin-bottom: 0.5rem; font-size: 0.9rem; color: var(--text-secondary); }
-    .form-group input, .form-group select {
-      width: 100%; padding: 1rem; background: rgba(15, 23, 42, 0.6);
-      border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px;
-      color: var(--text-primary); font-size: 1rem; font-family: 'Outfit', sans-serif;
-      outline: none; transition: all 0.3s ease;
+    .form-group {
+      margin-bottom: 1.5rem;
     }
-    .form-group input:focus, .form-group select:focus { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1); }
-    .form-group select { appearance: none; cursor: pointer; }
-    .form-group select option { background: #1e293b; color: var(--text-primary); }
-    .form-group select:disabled { opacity: 0.5; cursor: wait; }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 1rem;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      color: var(--text-primary);
+      font-size: 1rem;
+      font-family: 'Outfit', sans-serif;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+    }
+
+    .form-group select {
+      appearance: none;
+      cursor: pointer;
+    }
+
+    .form-group select option {
+      background: #1e293b;
+      color: var(--text-primary);
+    }
+
+    .form-group select:disabled {
+      opacity: 0.5;
+      cursor: wait;
+    }
 
     /* Status bar de instâncias */
-    .instance-status-bar { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem; min-height: 28px; }
-    .status-pill {
-      display: inline-flex; align-items: center; gap: 0.35rem;
-      padding: 0.25rem 0.75rem; border-radius: 999px; font-size: 0.78rem; font-weight: 600;
+    .instance-status-bar {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+      min-height: 28px;
     }
-    .status-pill.online  { background: rgba(16,185,129,0.15); color: #10b981; border: 1px solid rgba(16,185,129,0.3); }
-    .status-pill.offline { background: rgba(239,68,68,0.1);   color: #ef4444; border: 1px solid rgba(239,68,68,0.25); }
-    .status-pill .dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.25rem 0.75rem;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 600;
+    }
+
+    .status-pill.online {
+      background: rgba(16, 185, 129, 0.15);
+      color: #10b981;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .status-pill.offline {
+      background: rgba(239, 68, 68, 0.1);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.25);
+    }
+
+    .status-pill .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: currentColor;
+    }
 
     /* Badge de origem em cada linha */
     .source-badge {
-      display: inline-block; font-size: 0.68rem; font-weight: 600; padding: 0.1rem 0.45rem;
-      border-radius: 4px; margin-left: 0.4rem; background: rgba(59,130,246,0.15);
-      color: #60a5fa; border: 1px solid rgba(59,130,246,0.25); vertical-align: middle;
+      display: inline-block;
+      font-size: 0.68rem;
+      font-weight: 600;
+      padding: 0.1rem 0.45rem;
+      border-radius: 4px;
+      margin-left: 0.4rem;
+      background: rgba(59, 130, 246, 0.15);
+      color: #60a5fa;
+      border: 1px solid rgba(59, 130, 246, 0.25);
+      vertical-align: middle;
     }
 
     /* Botões */
     .btn {
-      width: 100%; padding: 1rem; border: none; border-radius: 12px;
-      font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease;
+      width: 100%;
+      padding: 1rem;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
       font-family: 'Outfit', sans-serif;
     }
-    .btn-primary { background: linear-gradient(135deg, var(--accent), var(--accent-hover)); color: white; box-shadow: 0 4px 14px 0 rgba(59, 130, 246, 0.39); }
-    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4); }
-    
-    .btn-success { background: rgba(16, 185, 129, 0.2); color: var(--success); border: 1px solid var(--success); }
-    .btn-success:hover { background: rgba(16, 185, 129, 0.3); }
 
-    .btn-danger { background: rgba(239, 68, 68, 0.1); color: var(--error); border: 1px solid rgba(239, 68, 68, 0.3); }
-    .btn-danger:hover { background: rgba(239, 68, 68, 0.2); }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+      color: white;
+      box-shadow: 0 4px 14px 0 rgba(59, 130, 246, 0.39);
+    }
 
-    .btn-small { padding: 0.5rem 1rem; font-size: 0.9rem; width: auto; display: inline-block; }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+    }
 
-    .message { margin-top: 1rem; text-align: center; font-size: 0.9rem; min-height: 20px; }
-    .error { color: var(--error); }
-    .success { color: var(--success); }
+    .btn-success {
+      background: rgba(16, 185, 129, 0.2);
+      color: var(--success);
+      border: 1px solid var(--success);
+    }
+
+    .btn-success:hover {
+      background: rgba(16, 185, 129, 0.3);
+    }
+
+    .btn-danger {
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--error);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .btn-danger:hover {
+      background: rgba(239, 68, 68, 0.2);
+    }
+
+    .btn-small {
+      padding: 0.5rem 1rem;
+      font-size: 0.9rem;
+      width: auto;
+      display: inline-block;
+    }
+
+    .message {
+      margin-top: 1rem;
+      text-align: center;
+      font-size: 0.9rem;
+      min-height: 20px;
+    }
+
+    .error {
+      color: var(--error);
+    }
+
+    .success {
+      color: var(--success);
+    }
 
     /* Dashboard Layout */
-    .dashboard-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 1rem; }
-    .dashboard-header h2 { font-size: 1.8rem; }
-    .menu-tabs { display: flex; gap: 1rem; margin-bottom: 2rem; overflow-x: auto; }
-    .tab { padding: 0.5rem 1.5rem; background: rgba(255,255,255,0.05); border-radius: 8px; cursor: pointer; font-weight: 600; color: var(--text-secondary); transition: all 0.2s; }
-    .tab.active { background: var(--accent); color: white; }
+    .dashboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 1rem;
+    }
+
+    .dashboard-header h2 {
+      font-size: 1.8rem;
+    }
+
+    .menu-tabs {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      overflow-x: auto;
+    }
+
+    .tab {
+      padding: 0.5rem 1.5rem;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      color: var(--text-secondary);
+      transition: all 0.2s;
+    }
+
+    .tab.active {
+      background: var(--accent);
+      color: white;
+    }
 
     /* Tabela de Dados */
-    .table-container { overflow-x: auto; background: rgba(15, 23, 42, 0.5); border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); }
-    table { width: 100%; border-collapse: collapse; }
-    th, td { padding: 1rem; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.05); }
-    th { color: var(--text-secondary); font-weight: 600; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.05em; }
-    tr:hover { background: rgba(255,255,255,0.02); }
-    .actions { display: flex; gap: 0.5rem; }
+    .table-container {
+      overflow-x: auto;
+      background: rgba(15, 23, 42, 0.5);
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      padding: 1rem;
+      text-align: left;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      vertical-align: middle;
+    }
+    td.actions-cell {
+      white-space: nowrap;
+      width: 1%;
+    }
+
+    th {
+      color: var(--text-secondary);
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    tr:hover {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .actions {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: nowrap;
+      white-space: nowrap;
+    }
 
     /* Modal */
     .modal-overlay {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
-      display: none; justify-content: center; align-items: center; z-index: 100;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      display: none;
+      justify-content: center;
+      align-items: flex-start;
+      overflow-y: auto;
+      padding: 1.5rem;
+      z-index: 100;
     }
+
     .modal {
-      background: var(--bg-secondary); padding: 2rem; border-radius: 16px;
-      width: 100%; max-width: 500px; border: 1px solid rgba(255,255,255,0.1);
-      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+      background: var(--bg-secondary);
+      padding: 2rem;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 500px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      margin: auto;
     }
-    .modal-header { display: flex; justify-content: space-between; margin-bottom: 1.5rem; }
-    .modal-close { background: none; border: none; color: var(--text-secondary); cursor: pointer; font-size: 1.5rem; }
-    
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 1.5rem;
+    }
+
+    /* Spinner de carregamento */
+    .spinner {
+      width: 18px; height: 18px;
+      border: 2.5px solid rgba(255,255,255,0.1);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: inline-block;
+      flex-shrink: 0;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-cell {
+      display: inline-flex; align-items: center; gap: 0.6rem;
+      color: var(--text-secondary); padding: 0.4rem 0;
+    }
+
+    /* User View — Fight Cards */
+    .container-user { max-width: 960px; display: none; }
+    .section-title { font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 1rem; }
+    .fights-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+    .fight-card {
+      background: rgba(15,23,42,0.6); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px; padding: 1.25rem; display: flex; flex-direction: column;
+      gap: 0.75rem; transition: all 0.25s ease;
+    }
+    .fight-card:hover { border-color: rgba(59,130,246,0.4); box-shadow: 0 8px 24px rgba(0,0,0,0.3); transform: translateY(-2px); }
+    .fight-meta { font-size: 0.8rem; color: var(--text-secondary); display: flex; gap: 0.75rem; }
+    .fight-vs { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; margin: 0.25rem 0; }
+    .vs-badge { background: rgba(59,130,246,0.2); color: var(--accent); padding: 0.2rem 0.6rem; border-radius: 6px; font-size: 0.7rem; font-weight: 800; flex-shrink: 0; }
+    .fighter-side { flex: 1; text-align: center; font-weight: 700; font-size: 0.9rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+    /* Admin Logs */
+    .log-row { display: flex; align-items: center; gap: 0.6rem; padding: 0.55rem 0; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 0.82rem; flex-wrap: nowrap; }
+    .log-row:last-child { border-bottom: none; }
+    .method-badge { padding: 0.15rem 0.5rem; border-radius: 4px; font-size: 0.7rem; font-weight: 700; flex-shrink: 0; min-width: 54px; text-align: center; }
+    .method-get    { background: rgba(59,130,246,0.2);  color: #60a5fa; }
+    .method-post   { background: rgba(16,185,129,0.2);  color: #10b981; }
+    .method-put    { background: rgba(245,158,11,0.2);  color: #f59e0b; }
+    .method-delete { background: rgba(239,68,68,0.15);  color: #ef4444; }
+    .log-status-ok  { color: var(--success); font-weight: 700; flex-shrink: 0; }
+    .log-status-err { color: var(--error);   font-weight: 700; flex-shrink: 0; }
+    .log-ts   { color: var(--text-secondary); font-family: monospace; font-size: 0.74rem; flex-shrink: 0; width: 72px; }
+    .log-path { font-family: monospace; color: var(--text-primary); flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .log-inst { color: var(--text-secondary); font-size: 0.78rem; flex-shrink: 0; min-width: 90px; text-align: right; }
+    .log-ms   { color: var(--text-secondary); font-size: 0.74rem; flex-shrink: 0; min-width: 50px; text-align: right; }
+
+    /* Modal de confirmação customizado */
+    .confirm-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.65);
+      backdrop-filter: blur(4px);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 400;
+    }
+
+    .confirm-box {
+      background: var(--bg-secondary);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 16px;
+      padding: 2rem;
+      width: 90%;
+      max-width: 380px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+      animation: toastIn 0.2s ease;
+    }
+
+    .confirm-box h3 {
+      font-size: 1.1rem;
+      margin-bottom: 0.6rem;
+    }
+
+    .confirm-box p {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      margin-bottom: 1.5rem;
+      line-height: 1.5;
+    }
+
+    .confirm-actions {
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .confirm-actions .btn {
+      flex: 1;
+    }
+
+    /* Toast de replicação */
+    .replication-toast {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 300;
+      background: var(--bg-secondary);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 16px;
+      padding: 1.5rem 2rem;
+      min-width: 300px;
+      max-width: 420px;
+      width: 90%;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+      display: none;
+      animation: toastIn 0.25s ease;
+    }
+
+    @keyframes toastIn {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -43%);
+      }
+
+      to {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+      }
+    }
+
+    .toast-title {
+      font-weight: 700;
+      font-size: 1rem;
+      margin-bottom: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .toast-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.6rem;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      font-size: 0.9rem;
+    }
+
+    .toast-row:last-child {
+      border-bottom: none;
+    }
+
+    .toast-icon-ok {
+      color: var(--success);
+      font-size: 1.1rem;
+      margin-top: 1px;
+    }
+
+    .toast-icon-err {
+      color: var(--error);
+      font-size: 1.1rem;
+      margin-top: 1px;
+    }
+
+    .toast-error-detail {
+      font-size: 0.72rem;
+      color: var(--text-secondary);
+      margin-top: 0.2rem;
+      word-break: break-word;
+    }
   </style>
 </head>
+
 <body>
 
   <!-- ============================== TELA DE LOGIN ============================== -->
@@ -150,7 +550,7 @@
       <h1>Integrador Fight</h1>
       <p>Gerenciamento Centralizado - API Gateway</p>
     </div>
-    
+
     <form id="login-form">
       <div class="form-group">
         <label>Usuário</label>
@@ -165,6 +565,73 @@
     </form>
   </div>
 
+  <!-- ============================== TELA USUÁRIO ============================== -->
+  <div class="container container-user" id="user-dashboard">
+    <div class="dashboard-header">
+      <div>
+        <h2 style="background:linear-gradient(to right,#60a5fa,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Fight Arena</h2>
+        <small style="color:var(--text-secondary);font-size:0.85rem;">Plataforma de Apostas em Lutas</small>
+      </div>
+      <button class="btn btn-danger btn-small" id="user-logout-btn">Sair</button>
+    </div>
+
+    <div style="margin-bottom:1.5rem;">
+      <p class="section-title" style="margin-bottom:0.75rem;">APIs Conectadas</p>
+      <div id="user-all-status" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:0.75rem;">
+        <div style="display:flex;align-items:center;gap:0.5rem;color:var(--text-secondary);grid-column:1/-1;"><span class="spinner"></span>Verificando conexões...</div>
+      </div>
+    </div>
+
+    <div id="user-register-banner" style="background:rgba(59,130,246,0.07);border:1px solid rgba(59,130,246,0.2);border-radius:12px;padding:1rem 1.25rem;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
+      <div>
+        <div style="font-weight:700;margin-bottom:0.2rem;">Novo por aqui?</div>
+        <div style="font-size:0.85rem;color:var(--text-secondary);">Cadastre-se como apostador para participar das lutas.</div>
+      </div>
+      <button class="btn btn-primary btn-small" onclick="openModalApostador('add')">+ Novo Apostador</button>
+    </div>
+
+    <div id="user-apostador-card" style="display:none;background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.3);border-radius:12px;padding:1.25rem;margin-bottom:1.5rem;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;">
+        <div style="font-size:0.8rem;color:var(--success);font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">Seu Cadastro</div>
+        <button class="btn btn-danger btn-small" style="padding:0.3rem 0.75rem;font-size:0.8rem;" onclick="clearApostadorCache()">Sair</button>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:1.5rem;flex-wrap:wrap;">
+        <div style="display:flex;flex-direction:column;gap:0.35rem;">
+          <div style="display:flex;gap:0.5rem;align-items:center;">
+            <span style="font-size:0.78rem;color:var(--text-secondary);min-width:60px;">Nome</span>
+            <span style="font-weight:700;" id="user-apostador-nome">—</span>
+          </div>
+          <div style="display:flex;gap:0.5rem;align-items:center;">
+            <span style="font-size:0.78rem;color:var(--text-secondary);min-width:60px;">Idade</span>
+            <span id="user-apostador-idade">—</span>
+          </div>
+          <div style="display:flex;gap:0.5rem;align-items:center;">
+            <span style="font-size:0.78rem;color:var(--text-secondary);min-width:60px;">Chave PIX</span>
+            <span style="font-family:monospace;" id="user-apostador-pix">—</span>
+          </div>
+        </div>
+        <div style="text-align:center;">
+          <div style="font-size:0.78rem;color:var(--text-secondary);margin-bottom:0.2rem;">ID de Apostador</div>
+          <div style="font-size:2.2rem;font-weight:800;color:var(--success);font-family:monospace;" id="user-apostador-id">—</div>
+          <div style="font-size:0.72rem;color:var(--text-secondary);">Use ao apostar</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+      <p class="section-title" style="margin-bottom:0;">Lutas Disponíveis</p>
+      <div style="display:flex;gap:0.5rem;">
+        <button class="btn btn-primary btn-small" onclick="openModalLutador('add')">+ Novo Lutador</button>
+        <button class="btn btn-success btn-small" onclick="openModalLuta('add')">+ Nova Luta</button>
+      </div>
+    </div>
+    <div class="fights-grid" id="user-fights-grid">
+      <div style="display:flex;align-items:center;gap:0.6rem;color:var(--text-secondary);grid-column:1/-1;">
+        <span class="spinner"></span>Carregando Dados
+      </div>
+    </div>
+  </div>
+
   <!-- ============================== TELA DASHBOARD ============================== -->
   <div class="container container-dashboard" id="dashboard">
     <div class="dashboard-header">
@@ -173,22 +640,26 @@
         <button class="btn btn-danger btn-small" id="logout-btn">Sair</button>
       </div>
     </div>
-    
+
     <!-- Abas das APIs -->
     <div class="menu-tabs">
       <div class="tab active" id="tab-apostadores" onclick="switchTab('apostadores')">Apostadores</div>
       <div class="tab" id="tab-lutadores" onclick="switchTab('lutadores')">Lutadores</div>
       <div class="tab" id="tab-lutas" onclick="switchTab('lutas')">Lutas</div>
       <div class="tab" id="tab-apostas" onclick="switchTab('apostas')">Apostas</div>
+      <div class="tab" id="tab-logs" onclick="switchTab('logs')">Logs</div>
     </div>
 
     <!-- ============================== Seção: Apostadores ============================== -->
     <div id="section-apostadores">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-        <p style="color: var(--text-secondary);">Gerencie os Apostadores unificados de todas as APIs.</p>
+      <div style="display: flex; justify-content: flex-end; margin-bottom: 0.5rem;">
         <button class="btn btn-success btn-small" onclick="openModalApostador('add')">+ Novo Apostador</button>
       </div>
-      <div class="instance-status-bar" id="status-bar-apostadores"></div>
+      <div style="display:flex;align-items:center;gap:0.6rem;flex-wrap:wrap;margin-bottom:1rem;min-height:28px;">
+        <span style="color:var(--text-secondary);font-size:0.85rem;font-weight:600;white-space:nowrap;">APIs
+          Conectadas:</span>
+        <div class="instance-status-bar" id="status-bar-apostadores" style="margin-bottom:0;min-height:unset;"></div>
+      </div>
 
       <div class="table-container">
         <table>
@@ -202,7 +673,9 @@
             </tr>
           </thead>
           <tbody id="apostadores-tbody">
-            <tr><td colspan="5" style="text-align: center;">Carregando dados da API...</td></tr>
+            <tr>
+              <td colspan="5" style="text-align:center;"><span class="loading-cell"><span class="spinner"></span>Carregando Dados</span></td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -210,11 +683,14 @@
 
     <!-- ============================== Seção: Lutas ============================== -->
     <div id="section-lutas" style="display: none;">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-        <p style="color: var(--text-secondary);">Gerencie as Lutas das duas APIs (RSA Auth).</p>
+      <div style="display: flex; justify-content: flex-end; margin-bottom: 0.5rem;">
         <button class="btn btn-success btn-small" onclick="openModalLuta('add')">+ Nova Luta</button>
       </div>
-      <div class="instance-status-bar" id="status-bar-lutas"></div>
+      <div style="display:flex;align-items:center;gap:0.6rem;flex-wrap:wrap;margin-bottom:1rem;min-height:28px;">
+        <span style="color:var(--text-secondary);font-size:0.85rem;font-weight:600;white-space:nowrap;">APIs
+          Conectadas:</span>
+        <div class="instance-status-bar" id="status-bar-lutas" style="margin-bottom:0;min-height:unset;"></div>
+      </div>
 
       <div class="table-container">
         <table>
@@ -229,7 +705,9 @@
             </tr>
           </thead>
           <tbody id="lutas-tbody">
-            <tr><td colspan="6" style="text-align: center;">Carregando dados da API...</td></tr>
+            <tr>
+              <td colspan="6" style="text-align:center;"><span class="loading-cell"><span class="spinner"></span>Carregando Dados</span></td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -237,11 +715,14 @@
 
     <!-- ============================== Seção: Lutadores ============================== -->
     <div id="section-lutadores" style="display: none;">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-        <p style="color: var(--text-secondary);">Integração Externa com API de Lutadores (Render)</p>
+      <div style="display: flex; justify-content: flex-end; margin-bottom: 0.5rem;">
         <button class="btn btn-success btn-small" onclick="openModalLutador('add')">+ Novo Lutador</button>
       </div>
-      <div class="instance-status-bar" id="status-bar-lutadores"></div>
+      <div style="display:flex;align-items:center;gap:0.6rem;flex-wrap:wrap;margin-bottom:1rem;min-height:28px;">
+        <span style="color:var(--text-secondary);font-size:0.85rem;font-weight:600;white-space:nowrap;">APIs
+          Conectadas:</span>
+        <div class="instance-status-bar" id="status-bar-lutadores" style="margin-bottom:0;min-height:unset;"></div>
+      </div>
 
       <div class="table-container">
         <table>
@@ -256,7 +737,9 @@
             </tr>
           </thead>
           <tbody id="lutadores-tbody">
-            <tr><td colspan="5" style="text-align: center;">Carregando dados da API...</td></tr>
+            <tr>
+              <td colspan="5" style="text-align:center;"><span class="loading-cell"><span class="spinner"></span>Carregando Dados</span></td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -264,11 +747,14 @@
 
     <!-- ============================== Seção: Apostas ============================== -->
     <div id="section-apostas" style="display: none;">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-        <p style="color: var(--text-secondary);">Apostas registradas — NanaDeBets (RSA+AES)</p>
+      <div style="display: flex; justify-content: flex-end; margin-bottom: 0.5rem;">
         <button class="btn btn-success btn-small" onclick="openModalAposta('add')">+ Nova Aposta</button>
       </div>
-      <div class="instance-status-bar" id="status-bar-apostas"></div>
+      <div style="display:flex;align-items:center;gap:0.6rem;flex-wrap:wrap;margin-bottom:1rem;min-height:28px;">
+        <span style="color:var(--text-secondary);font-size:0.85rem;font-weight:600;white-space:nowrap;">APIs
+          Conectadas:</span>
+        <div class="instance-status-bar" id="status-bar-apostas" style="margin-bottom:0;min-height:unset;"></div>
+      </div>
 
       <div class="table-container">
         <table>
@@ -284,9 +770,24 @@
             </tr>
           </thead>
           <tbody id="apostas-tbody">
-            <tr><td colspan="7" style="text-align: center;">Carregando dados da API...</td></tr>
+            <tr>
+              <td colspan="7" style="text-align:center;"><span class="loading-cell"><span class="spinner"></span>Carregando Dados</span></td>
+            </tr>
           </tbody>
         </table>
+      </div>
+    </div>
+
+    <!-- ============================== Seção: Logs ============================== -->
+    <div id="section-logs" style="display:none;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+        <p class="section-title" style="margin-bottom:0;">Requisições às APIs</p>
+        <button class="btn btn-primary btn-small" onclick="fetchLogs()">Atualizar</button>
+      </div>
+      <div id="logs-container" style="background:rgba(15,23,42,0.5);border-radius:12px;border:1px solid rgba(255,255,255,0.05);padding:0.5rem 1.25rem;max-height:520px;overflow-y:auto;">
+        <div style="display:flex;align-items:center;gap:0.6rem;color:var(--text-secondary);padding:1rem 0;">
+          <span class="spinner"></span>Carregando logs...
+        </div>
       </div>
     </div>
 
@@ -437,24 +938,147 @@
     </div>
   </div>
 
+  <!-- Modal de aposta (user view) -->
+  <div class="modal-overlay" id="user-modal-aposta">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Fazer Aposta</h3>
+        <button class="modal-close" onclick="closeModal('user-modal-aposta')">&times;</button>
+      </div>
+      <div id="user-bet-fight-info" style="background:rgba(15,23,42,0.5);border-radius:10px;padding:0.9rem 1rem;margin-bottom:1.25rem;text-align:center;"></div>
+      <form id="user-bet-form">
+        <input type="hidden" id="user-bet-fight-id">
+        <input type="hidden" id="user-bet-fighter2-id">
+        <div class="form-group">
+          <label>Apostar no lutador</label>
+          <select id="user-bet-fighter1" required>
+            <option value="">Selecione quem vai ganhar</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Seu ID de Apostador</label>
+          <input type="number" id="user-bet-apostador-id" placeholder="Ex: 1" min="1" required>
+        </div>
+        <div class="form-group">
+          <label>Valor da Aposta (R$)</label>
+          <input type="number" id="user-bet-valor" min="0.01" step="0.01" placeholder="Ex: 50.00" required>
+        </div>
+        <div style="display:flex;gap:1rem;margin-top:1.5rem;">
+          <button type="button" class="btn btn-danger" onclick="closeModal('user-modal-aposta')">Cancelar</button>
+          <button type="submit" class="btn btn-success" id="user-bet-submit">Confirmar Aposta</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal de confirmação customizado -->
+  <div class="confirm-overlay" id="confirm-overlay">
+    <div class="confirm-box">
+      <h3>Tem certeza?</h3>
+      <p id="confirm-message"></p>
+      <div class="confirm-actions">
+        <button class="btn btn-danger" id="confirm-ok-btn">Excluir</button>
+        <button class="btn" style="background:rgba(255,255,255,0.05);color:var(--text-secondary);"
+          onclick="closeConfirm()">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast de resultado de replicação -->
+  <div class="replication-toast" id="replication-toast">
+    <div class="toast-title">
+      <span id="toast-title-text">Resultado da operação</span>
+      <button onclick="closeToast()"
+        style="background:none;border:none;color:var(--text-secondary);cursor:pointer;font-size:1.3rem;line-height:1;">&times;</button>
+    </div>
+    <div id="toast-rows"></div>
+  </div>
+
   <script>
     function sourceBadges(item) {
       const sources = item._sources || (item._source ? [item._source] : []);
-      return sources.map(s => `<span class="source-badge">${s}</span>`).join('');
+      if (!sources.length) return '';
+      return `<div style="display:flex;flex-direction:column;gap:0.2rem;margin-top:0.3rem;">${sources.map(s => `<span class="source-badge" style="display:inline-block;width:fit-content;">${s}</span>`).join('')}</div>`;
     }
+
+    // --- TOAST DE REPLICAÇÃO ---
+    function getShortNameJS(url) {
+      try {
+        const { hostname } = new URL(url);
+        if (hostname === "187.77.235.119") return "NanaDeBets";
+        if (hostname.includes("api-aposta-lutas")) return "ApostaLutas";
+        if (hostname.includes("bet3m")) return "Bet3m";
+        if (hostname.includes("betting-api-beta")) return "BettingBeta";
+        if (hostname.includes("apostadores")) return "FightAzure";
+        if (hostname.includes("api-sd")) return "ApiSD";
+        if (hostname.includes("lutadores-api")) return "NanadeFight";
+        if (hostname.includes("lutadores")) return "LutadoresSD";
+        const first = hostname.split(".")[0].replace(/-/g, " ");
+        return first.charAt(0).toUpperCase() + first.slice(1);
+      } catch { return url; }
+    }
+
+    let _toastTimer = null;
+
+    function showReplicationToast(relatorio, action = "Gravado") {
+      const toast = document.getElementById("replication-toast");
+      const rows = document.getElementById("toast-rows");
+      const titleEl = document.getElementById("toast-title-text");
+      const successCount = relatorio.filter(r => r.status === "sucesso").length;
+      titleEl.textContent = `${action} — ${successCount}/${relatorio.length} banco${relatorio.length !== 1 ? 's' : ''}`;
+      rows.innerHTML = relatorio.map(r => `
+        <div class="toast-row">
+          <span class="${r.status === 'sucesso' ? 'toast-icon-ok' : 'toast-icon-err'}">${r.status === 'sucesso' ? '✓' : '✗'}</span>
+          <div>
+            <div><strong>${getShortNameJS(r.instance)}</strong> — ${r.status === 'sucesso' ? 'gravado com sucesso' : 'falhou'}</div>
+            ${r.error ? `<div class="toast-error-detail">${String(r.error).substring(0, 100)}</div>` : ''}
+          </div>
+        </div>
+      `).join('');
+      toast.style.display = 'block';
+      if (_toastTimer) clearTimeout(_toastTimer);
+      _toastTimer = setTimeout(closeToast, 5000);
+    }
+
+    function closeToast() {
+      document.getElementById("replication-toast").style.display = 'none';
+      if (_toastTimer) { clearTimeout(_toastTimer); _toastTimer = null; }
+    }
+
+    // --- HELPER DE CARREGAMENTO ---
+    function loadingRow(cols) {
+      return `<tr><td colspan="${cols}" style="text-align:center;"><span class="loading-cell"><span class="spinner"></span>Carregando Dados</span></td></tr>`;
+    }
+
+    // --- CONFIRM CUSTOMIZADO ---
+    function showConfirm(message, onConfirm) {
+      document.getElementById('confirm-message').textContent = message;
+      document.getElementById('confirm-overlay').style.display = 'flex';
+      const btn = document.getElementById('confirm-ok-btn');
+      btn.onclick = () => { closeConfirm(); onConfirm(); };
+    }
+
+    function closeConfirm() {
+      document.getElementById('confirm-overlay').style.display = 'none';
+    }
+
+    // Fechar ao clicar fora da caixa
+    document.getElementById('confirm-overlay').addEventListener('click', function (e) {
+      if (e.target === this) closeConfirm();
+    });
 
     // Referências DOM
     const loginForm = document.getElementById('login-form');
     const loginContainer = document.getElementById('login-container');
     const dashboard = document.getElementById('dashboard');
-    
-    // Variável global
+
+    // Variáveis globais
     let currentToken = localStorage.getItem('integrador_token');
+    let currentRole  = localStorage.getItem('integrador_role') || 'admin';
 
     // Inicialização
     if (currentToken) {
-      showDashboard();
-      fetchApostadores();
+      showDashboard(currentRole);
     }
 
     // --- AUTENTICAÇÃO ---
@@ -464,26 +1088,28 @@
       const password = document.getElementById('password').value;
       const btn = document.getElementById('login-btn');
       const msg = document.getElementById('login-message');
-      
+
       btn.innerHTML = 'Autenticando...';
       btn.disabled = true;
       msg.textContent = '';
-      
+
       try {
         const response = await fetch('/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ username, password })
         });
-        
+
         const data = await response.json();
-        
+
         if (response.ok) {
           localStorage.setItem('integrador_token', data.token);
+          localStorage.setItem('integrador_role', data.role || 'admin');
           currentToken = data.token;
+          currentRole  = data.role || 'admin';
           msg.className = 'message success';
           msg.textContent = 'Acesso concedido!';
-          setTimeout(() => { showDashboard(); fetchApostadores(); }, 500);
+          setTimeout(() => showDashboard(currentRole), 500);
         } else {
           msg.className = 'message error';
           msg.textContent = data.erro || 'Credenciais inválidas';
@@ -500,14 +1126,29 @@
 
     document.getElementById('logout-btn').addEventListener('click', () => {
       localStorage.removeItem('integrador_token');
+      localStorage.removeItem('integrador_role');
       currentToken = null;
       dashboard.style.display = 'none';
       loginContainer.style.display = 'block';
     });
 
-    function showDashboard() {
+    document.getElementById('user-logout-btn').addEventListener('click', () => {
+      localStorage.removeItem('integrador_token');
+      localStorage.removeItem('integrador_role');
+      currentToken = null;
+      document.getElementById('user-dashboard').style.display = 'none';
+      loginContainer.style.display = 'block';
+    });
+
+    function showDashboard(role) {
       loginContainer.style.display = 'none';
-      dashboard.style.display = 'block';
+      if (role === 'user') {
+        document.getElementById('user-dashboard').style.display = 'block';
+        initUserView();
+      } else {
+        dashboard.style.display = 'block';
+        fetchApostadores();
+      }
     }
 
     // --- STATUS DAS INSTÂNCIAS ---
@@ -526,28 +1167,28 @@
 
     // --- CONTROLE DE ABAS ---
     function switchTab(tabName) {
-      ['apostadores', 'lutadores', 'lutas', 'apostas'].forEach(name => {
+      ['apostadores', 'lutadores', 'lutas', 'apostas', 'logs'].forEach(name => {
         document.getElementById('section-' + name).style.display = 'none';
         document.getElementById('tab-' + name).classList.remove('active');
       });
-
       document.getElementById('section-' + tabName).style.display = 'block';
       document.getElementById('tab-' + tabName).classList.add('active');
 
-      if(tabName === 'apostadores') fetchApostadores();
-      if(tabName === 'lutadores') fetchLutadores();
-      if(tabName === 'lutas') fetchLutas();
-      if(tabName === 'apostas') fetchApostas();
+      if (tabName === 'apostadores') fetchApostadores();
+      if (tabName === 'lutadores')   fetchLutadores();
+      if (tabName === 'lutas')       fetchLutas();
+      if (tabName === 'apostas')     fetchApostas();
+      if (tabName === 'logs')        fetchLogs();
     }
 
 
     // ==========================================
     // CRUD APOSTADORES
     // ==========================================
-    
+
     async function fetchApostadores() {
       const tbody = document.getElementById('apostadores-tbody');
-      tbody.innerHTML = `<tr><td colspan="5" style="text-align: center;">Carregando das instâncias...</td></tr>`;
+      tbody.innerHTML = loadingRow(5);
       try {
         const response = await fetch('/api/apostadores', {
           headers: { 'Authorization': `Bearer ${currentToken}` }
@@ -579,7 +1220,7 @@
           <td><strong>${ap.nome}</strong></td>
           <td>${ap.idade}</td>
           <td style="font-family: monospace;">${ap.chavePix || ap.chave_pix || 'N/A'}</td>
-          <td class="actions">
+          <td class="actions actions-cell">
             <button class="btn btn-primary btn-small" onclick="openModalApostador('edit', '${ap.id}', '${ap.nome}', ${ap.idade}, '${ap.chavePix || ap.chave_pix}')">Editar</button>
             <button class="btn btn-danger btn-small" onclick="deleteApostador('${ap.id}')">Excluir</button>
           </td>
@@ -589,7 +1230,7 @@
 
     document.getElementById('apostador-form').addEventListener('submit', async (e) => {
       e.preventDefault();
-      
+
       const id = document.getElementById('ap-form-id').value;
       const pix = document.getElementById('ap-form-pix').value;
       const payload = {
@@ -602,7 +1243,7 @@
       const isEdit = id !== "";
       const url = isEdit ? `/api/apostadores/${id}` : '/api/apostadores';
       const method = isEdit ? 'PUT' : 'POST';
-      
+
       const btn = document.getElementById('ap-submit-btn');
       const originalText = btn.innerHTML;
       btn.innerHTML = 'Enviando p/ APIs...';
@@ -616,8 +1257,24 @@
         });
 
         if (response.ok) {
+          const result = await response.json();
+          // Lê os valores ANTES do closeModal (que chama form.reset())
+          const _nome  = document.getElementById('ap-form-nome').value;
+          const _idade = document.getElementById('ap-form-idade').value;
+          const _pix   = document.getElementById('ap-form-pix').value;
           closeModal('modal-apostador');
-          fetchApostadores();
+          if (currentRole === 'admin') fetchApostadores();
+          if (result.relatorio) showReplicationToast(result.relatorio, isEdit ? 'Atualizado' : 'Gravado');
+          if (!isEdit && currentRole === 'user') {
+            const successEntry = result.relatorio?.find(r => r.status === 'sucesso');
+            const novoId = successEntry?.data?.id ?? successEntry?.data?.apostador?.id
+                        ?? successEntry?.data?.apostadores?.id;
+            const apostadorData = { nome: _nome, idade: _idade, pix: _pix, id: novoId ?? '—' };
+            localStorage.setItem('fight_apostador', JSON.stringify(apostadorData));
+            _renderApostadorCard(apostadorData);
+            // pré-preenche o campo de ID no modal de aposta
+            if (novoId) document.getElementById('user-bet-apostador-id').value = novoId;
+          }
         } else {
           const err = await response.json();
           alert("Erro: " + (err.erro || err.mensagem || "Falha na operação"));
@@ -631,15 +1288,19 @@
     });
 
     async function deleteApostador(id) {
-      if (!confirm(`Tem certeza que deseja excluir o apostador ID ${id} de TODAS as instâncias?`)) return;
-      try {
-        const response = await fetch(`/api/apostadores/${id}`, {
-          method: 'DELETE',
-          headers: { 'Authorization': `Bearer ${currentToken}` }
-        });
-        if (response.ok) fetchApostadores();
-        else alert("Erro ao excluir o apostador.");
-      } catch (err) { alert("Erro de conexão ao excluir."); }
+      showConfirm(`Excluir o apostador ID ${id} de todas as instâncias?`, async () => {
+        try {
+          const response = await fetch(`/api/apostadores/${id}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${currentToken}` }
+          });
+          if (response.ok) {
+            const result = await response.json();
+            fetchApostadores();
+            if (result.relatorio) showReplicationToast(result.relatorio, 'Excluído');
+          } else alert("Erro ao excluir o apostador.");
+        } catch (err) { alert("Erro de conexão ao excluir."); }
+      });
     }
 
 
@@ -649,7 +1310,7 @@
 
     async function fetchLutadores() {
       const tbody = document.getElementById('lutadores-tbody');
-      tbody.innerHTML = `<tr><td colspan="6" style="text-align: center;">Carregando (A API no Render pode demorar até 50s para acordar)...</td></tr>`;
+      tbody.innerHTML = loadingRow(6);
       try {
         const response = await fetch('/api/lutadores', {
           headers: { 'Authorization': `Bearer ${currentToken}` }
@@ -682,7 +1343,7 @@
           <td><span class="btn-success btn-small" style="background:none; padding:0;">${lu.categoria || 'N/A'}</span></td>
           <td>${lu.apelido || ''}</td>
           <td>${lu.arte || ''}</td>
-          <td class="actions">
+          <td class="actions actions-cell">
             <button class="btn btn-primary btn-small" onclick="openModalLutador('edit', '${lu.id}', '${lu.nome || ''}', '${lu.categoria || ''}', '${lu.apelido || ''}', '${lu.arte || ''}')">Editar</button>
             <button class="btn btn-danger btn-small" onclick="deleteLutador('${lu.id}')">Excluir</button>
           </td>
@@ -692,7 +1353,7 @@
 
     document.getElementById('lutador-form').addEventListener('submit', async (e) => {
       e.preventDefault();
-      
+
       const id = document.getElementById('lu-form-id').value;
       const payload = {
         nome: document.getElementById('lu-form-nome').value,
@@ -704,7 +1365,7 @@
       const isEdit = id !== "";
       const url = isEdit ? `/api/lutadores/${id}` : '/api/lutadores';
       const method = isEdit ? 'PUT' : 'POST';
-      
+
       const btn = document.getElementById('lu-submit-btn');
       const originalText = btn.innerHTML;
       btn.innerHTML = 'Enviando p/ APIs...';
@@ -718,8 +1379,11 @@
         });
 
         if (response.ok) {
+          const result = await response.json();
           closeModal('modal-lutador');
-          fetchLutadores();
+          if (currentRole === 'admin') fetchLutadores();
+          if (currentRole === 'user')  _loadUserFighters().then(() => _loadUserFights());
+          if (result.relatorio) showReplicationToast(result.relatorio, isEdit ? 'Atualizado' : 'Gravado');
         } else {
           const err = await response.json();
           alert("Erro: " + (err.erro || err.mensagem || "Falha na operação"));
@@ -733,15 +1397,19 @@
     });
 
     async function deleteLutador(id) {
-      if (!confirm(`Tem certeza que deseja excluir o lutador ID ${id}?`)) return;
-      try {
-        const response = await fetch(`/api/lutadores/${id}`, {
-          method: 'DELETE',
-          headers: { 'Authorization': `Bearer ${currentToken}` }
-        });
-        if (response.ok) fetchLutadores();
-        else alert("Erro ao excluir lutador.");
-      } catch (err) { alert("Erro de conexão ao excluir."); }
+      showConfirm(`Excluir o lutador ID ${id} de todas as instâncias?`, async () => {
+        try {
+          const response = await fetch(`/api/lutadores/${id}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${currentToken}` }
+          });
+          if (response.ok) {
+            const result = await response.json();
+            fetchLutadores();
+            if (result.relatorio) showReplicationToast(result.relatorio, 'Excluído');
+          } else alert("Erro ao excluir lutador.");
+        } catch (err) { alert("Erro de conexão ao excluir."); }
+      });
     }
 
 
@@ -751,7 +1419,7 @@
 
     async function fetchLutas() {
       const tbody = document.getElementById('lutas-tbody');
-      tbody.innerHTML = `<tr><td colspan="6" style="text-align: center;">Carregando das instâncias...</td></tr>`;
+      tbody.innerHTML = loadingRow(6);
       try {
         const response = await fetch('/api/lutas', {
           headers: { 'Authorization': `Bearer ${currentToken}` }
@@ -783,9 +1451,9 @@
           <td>${lt.horario || 'N/A'}</td>
           <td>${lt.id_lutador1 || lt.lutador1 || 'N/A'}</td>
           <td>${lt.id_lutador2 || lt.lutador2 || 'N/A'}</td>
-          <td class="actions">
+          <td class="actions actions-cell">
             <button class="btn btn-primary btn-small" onclick="openModalLuta('edit', ${lt.id}, '${lt.data || ''}', '${lt.horario || ''}', ${lt.id_lutador1 || lt.lutador1 || 0}, ${lt.id_lutador2 || lt.lutador2 || 0})">Editar</button>
-            <button class="btn btn-danger btn-small" onclick="deleteLuta(${lt.id})">Cancelar</button>
+            <button class="btn btn-danger btn-small" onclick="deleteLuta(${lt.id})">Excluir</button>
           </td>
         </tr>
       `).join('');
@@ -817,8 +1485,11 @@
           body: JSON.stringify(payload)
         });
         if (response.ok) {
+          const result = await response.json();
           closeModal('modal-luta');
-          fetchLutas();
+          if (currentRole === 'admin') fetchLutas();
+          if (currentRole === 'user')  { _loadUserFighters().then(() => _loadUserFights()); }
+          if (result.relatorio) showReplicationToast(result.relatorio, isEdit ? 'Atualizado' : 'Gravado');
         } else {
           const err = await response.json();
           alert("Erro: " + (err.erro || err.detail || JSON.stringify(err)));
@@ -832,15 +1503,19 @@
     });
 
     async function deleteLuta(id) {
-      if (!confirm(`Tem certeza que deseja cancelar a luta ID ${id} em todas as instâncias?`)) return;
-      try {
-        const response = await fetch(`/api/lutas/${id}`, {
-          method: 'DELETE',
-          headers: { 'Authorization': `Bearer ${currentToken}` }
-        });
-        if (response.ok) fetchLutas();
-        else alert("Erro ao cancelar a luta.");
-      } catch (err) { alert("Erro de conexão ao cancelar."); }
+      showConfirm(`Excluir a luta ID ${id} de todas as instâncias?`, async () => {
+        try {
+          const response = await fetch(`/api/lutas/${id}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${currentToken}` }
+          });
+          if (response.ok) {
+            const result = await response.json();
+            fetchLutas();
+            if (result.relatorio) showReplicationToast(result.relatorio, 'Excluído');
+          } else alert("Erro ao excluir a luta.");
+        } catch (err) { alert("Erro de conexão ao excluir."); }
+      });
     }
 
     // ==========================================
@@ -849,7 +1524,7 @@
 
     async function fetchApostas() {
       const tbody = document.getElementById('apostas-tbody');
-      tbody.innerHTML = `<tr><td colspan="7" style="text-align: center;">Carregando das instâncias (RSA+AES)...</td></tr>`;
+      tbody.innerHTML = loadingRow(7);
       try {
         const response = await fetch('/api/apostas', {
           headers: { 'Authorization': `Bearer ${currentToken}` }
@@ -883,7 +1558,7 @@
           <td>${ap.idLutador1 ?? ap.id_lutador ?? 'N/A'}</td>
           <td>${ap.idLutador2 ?? 'N/A'}</td>
           <td>R$ ${parseFloat(ap.valor ?? 0).toFixed(2)}</td>
-          <td class="actions">
+          <td class="actions actions-cell">
             <button class="btn btn-primary btn-small" onclick="openModalAposta('edit', ${ap.id}, ${ap.idApostador ?? ap.id_apostador ?? 0}, ${ap.idLuta ?? ap.id_luta ?? 0}, ${ap.idLutador1 ?? ap.id_lutador ?? 0}, ${ap.idLutador2 ?? 0}, ${ap.valor ?? 0})">Editar</button>
             <button class="btn btn-danger btn-small" onclick="deleteAposta(${ap.id})">Excluir</button>
           </td>
@@ -899,12 +1574,12 @@
       const payload = isEdit
         ? { valor: parseFloat(document.getElementById('aps-form-valor').value) }
         : {
-            idApostador: parseInt(document.getElementById('aps-form-apostador').value),
-            idLuta: parseInt(document.getElementById('aps-form-luta').value),
-            idLutador1: parseInt(document.getElementById('aps-form-lutador1').value),
-            idLutador2: parseInt(document.getElementById('aps-form-lutador2').value),
-            valor: parseFloat(document.getElementById('aps-form-valor').value)
-          };
+          idApostador: parseInt(document.getElementById('aps-form-apostador').value),
+          idLuta: parseInt(document.getElementById('aps-form-luta').value),
+          idLutador1: parseInt(document.getElementById('aps-form-lutador1').value),
+          idLutador2: parseInt(document.getElementById('aps-form-lutador2').value),
+          valor: parseFloat(document.getElementById('aps-form-valor').value)
+        };
 
       const url = isEdit ? `/api/apostas/${id}` : '/api/apostas';
       const method = isEdit ? 'PUT' : 'POST';
@@ -921,8 +1596,10 @@
           body: JSON.stringify(payload)
         });
         if (response.ok) {
+          const result = await response.json();
           closeModal('modal-aposta');
           fetchApostas();
+          if (result.relatorio) showReplicationToast(result.relatorio, isEdit ? 'Atualizado' : 'Gravado');
         } else {
           const err = await response.json().catch(() => ({}));
           alert("Erro: " + (err.erro || err.mensagem || "Falha na operação"));
@@ -936,15 +1613,19 @@
     });
 
     async function deleteAposta(id) {
-      if (!confirm(`Tem certeza que deseja excluir a aposta ID ${id}?`)) return;
-      try {
-        const response = await fetch(`/api/apostas/${id}`, {
-          method: 'DELETE',
-          headers: { 'Authorization': `Bearer ${currentToken}` }
-        });
-        if (response.ok) fetchApostas();
-        else alert("Erro ao excluir aposta.");
-      } catch (err) { alert("Erro de conexão ao excluir."); }
+      showConfirm(`Excluir a aposta ID ${id} de todas as instâncias?`, async () => {
+        try {
+          const response = await fetch(`/api/apostas/${id}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${currentToken}` }
+          });
+          if (response.ok) {
+            const result = await response.json();
+            fetchApostas();
+            if (result.relatorio) showReplicationToast(result.relatorio, 'Excluído');
+          } else alert("Erro ao excluir aposta.");
+        } catch (err) { alert("Erro de conexão ao excluir."); }
+      });
     }
 
     // --- CONTROLES DE MODAIS ---
@@ -1019,8 +1700,8 @@
       const h = { 'Authorization': `Bearer ${currentToken}` };
       const [apRes, ltRes, luRes] = await Promise.allSettled([
         fetch('/api/apostadores', { headers: h }).then(r => r.json()),
-        fetch('/api/lutas',       { headers: h }).then(r => r.json()),
-        fetch('/api/lutadores',   { headers: h }).then(r => r.json()),
+        fetch('/api/lutas', { headers: h }).then(r => r.json()),
+        fetch('/api/lutadores', { headers: h }).then(r => r.json()),
       ]);
 
       const sel = (id, opts) => {
@@ -1076,13 +1757,201 @@
       if (!isEdit) loadApostaSelects();
     }
 
+    // ==========================================
+    // USER VIEW
+    // ==========================================
+
+    let _userFighters = {};
+
+    function clearApostadorCache() {
+      localStorage.removeItem('fight_apostador');
+      document.getElementById('user-apostador-card').style.display = 'none';
+      document.getElementById('user-register-banner').style.display = 'flex';
+    }
+
+    function _renderApostadorCard(data) {
+      document.getElementById('user-apostador-nome').textContent  = data.nome  || '—';
+      document.getElementById('user-apostador-idade').textContent = data.idade ? `${data.idade} anos` : '—';
+      document.getElementById('user-apostador-pix').textContent   = data.pix   || '—';
+      document.getElementById('user-apostador-id').textContent    = data.id    ?? '—';
+      document.getElementById('user-apostador-card').style.display = 'block';
+      document.getElementById('user-register-banner').style.display = 'none';
+      if (data.id && data.id !== '—') document.getElementById('user-bet-apostador-id').value = data.id;
+    }
+
+    async function initUserView() {
+      const cached = localStorage.getItem('fight_apostador');
+      if (cached) { try { _renderApostadorCard(JSON.parse(cached)); } catch {} }
+      await Promise.all([_loadUserFighters(), _loadUserFights(), _loadAllApiStatus()]);
+    }
+
+    async function _loadAllApiStatus() {
+      const cats = [
+        { key: 'apostadores', label: 'Apostadores' },
+        { key: 'lutadores',   label: 'Lutadores'   },
+        { key: 'lutas',       label: 'Lutas'       },
+        { key: 'apostas',     label: 'Apostas'     }
+      ];
+      const results = await Promise.allSettled(
+        cats.map(c => fetch(`/api/${c.key}`, { headers: { 'Authorization': `Bearer ${currentToken}` } }).then(r => r.json()))
+      );
+      const container = document.getElementById('user-all-status');
+      container.innerHTML = cats.map((c, i) => {
+        const val = results[i].status === 'fulfilled' ? results[i].value : null;
+        const instances = val?.instances || [];
+        return `<div style="background:rgba(15,23,42,0.5);border-radius:10px;padding:0.75rem 1rem;border:1px solid rgba(255,255,255,0.06);">
+          <div style="font-size:0.72rem;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.5rem;">${c.label}</div>
+          <div style="display:flex;flex-direction:column;gap:0.3rem;">
+            ${instances.length
+              ? instances.map(inst => `<span class="status-pill ${inst.status}" title="${inst.url}" style="width:fit-content;"><span class="dot"></span>${inst.name}</span>`).join('')
+              : `<span style="color:var(--text-secondary);font-size:0.8rem;">Sem resposta</span>`}
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    async function _loadUserFighters() {
+      try {
+        const res = await fetch('/api/lutadores', { headers: { 'Authorization': `Bearer ${currentToken}` } });
+        if (res.ok) {
+          const result = await res.json();
+          const list = Array.isArray(result) ? result : (result.data || []);
+          list.forEach(f => { _userFighters[f.id] = f; });
+        }
+      } catch {}
+    }
+
+    async function _loadUserFights() {
+      const grid = document.getElementById('user-fights-grid');
+      try {
+        const res = await fetch('/api/lutas', { headers: { 'Authorization': `Bearer ${currentToken}` } });
+        if (!res.ok) { grid.innerHTML = `<p style="color:var(--error);">Erro ao carregar lutas.</p>`; return; }
+        const result = await res.json();
+        // status pills
+        const bar = document.getElementById('user-status-bar');
+        if (bar && result.instances) {
+          bar.innerHTML = result.instances.map(inst => `
+            <span class="status-pill ${inst.status}" title="${inst.url}">
+              <span class="dot"></span>${inst.name}
+              ${inst.status === 'offline' ? '<small style="opacity:0.7">(offline)</small>' : ''}
+            </span>`).join('');
+        }
+        const fights = result.data || [];
+        if (!fights.length) { grid.innerHTML = `<p style="color:var(--text-secondary);">Nenhuma luta disponível.</p>`; return; }
+        grid.innerHTML = fights.map(lt => {
+          const f1 = _userFighters[lt.id_lutador1 || lt.lutador1];
+          const f2 = _userFighters[lt.id_lutador2 || lt.lutador2];
+          const nome1 = f1 ? f1.nome : `Lutador #${lt.id_lutador1 || lt.lutador1 || '?'}`;
+          const nome2 = f2 ? f2.nome : `Lutador #${lt.id_lutador2 || lt.lutador2 || '?'}`;
+          const id1 = lt.id_lutador1 || lt.lutador1 || 0;
+          const id2 = lt.id_lutador2 || lt.lutador2 || 0;
+          return `
+            <div class="fight-card">
+              <div class="fight-meta">
+                <span>📅 ${lt.data || 'Data N/D'}</span>
+                <span>🕐 ${lt.horario || ''}</span>
+              </div>
+              <div class="fight-vs">
+                <span class="fighter-side" title="${nome1}">${nome1}</span>
+                <span class="vs-badge">VS</span>
+                <span class="fighter-side" title="${nome2}">${nome2}</span>
+              </div>
+              <button class="btn btn-primary" style="padding:0.6rem;"
+                onclick="openUserBetModal(${lt.id}, '${nome1}', '${nome2}', ${id1}, ${id2})">
+                Apostar nesta luta
+              </button>
+            </div>`;
+        }).join('');
+      } catch {
+        grid.innerHTML = `<p style="color:var(--error);">Erro de conexão.</p>`;
+      }
+    }
+
+    function openUserBetModal(fightId, nome1, nome2, id1, id2) {
+      document.getElementById('user-bet-fight-id').value = fightId;
+      document.getElementById('user-bet-fighter2-id').value = 0;
+      document.getElementById('user-bet-fight-info').innerHTML = `
+        <div style="font-weight:700;font-size:1rem;margin-bottom:0.3rem;">Luta #${fightId}</div>
+        <div style="display:flex;align-items:center;justify-content:center;gap:0.75rem;font-size:0.9rem;">
+          <span>${nome1}</span><span class="vs-badge">VS</span><span>${nome2}</span>
+        </div>`;
+      const sel = document.getElementById('user-bet-fighter1');
+      sel.innerHTML = `
+        <option value="">Selecione quem vai ganhar</option>
+        <option value="${id1}_${id2}">${nome1}</option>
+        <option value="${id2}_${id1}">${nome2}</option>`;
+      document.getElementById('user-modal-aposta').style.display = 'flex';
+    }
+
+    document.getElementById('user-bet-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const sel = document.getElementById('user-bet-fighter1').value;
+      const [idLutador1, idLutador2] = sel.split('_').map(Number);
+      const payload = {
+        idApostador: parseInt(document.getElementById('user-bet-apostador-id').value),
+        idLuta:      parseInt(document.getElementById('user-bet-fight-id').value),
+        idLutador1,
+        idLutador2,
+        valor: parseFloat(document.getElementById('user-bet-valor').value)
+      };
+      const btn = document.getElementById('user-bet-submit');
+      btn.textContent = 'Enviando...'; btn.disabled = true;
+      try {
+        const res = await fetch('/api/apostas', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${currentToken}` },
+          body: JSON.stringify(payload)
+        });
+        if (res.ok) {
+          const result = await res.json();
+          closeModal('user-modal-aposta');
+          document.getElementById('user-bet-form').reset();
+          if (result.relatorio) showReplicationToast(result.relatorio, 'Aposta registrada');
+        } else {
+          const err = await res.json().catch(() => ({}));
+          alert('Erro: ' + (err.erro || err.mensagem || 'Falha ao registrar aposta'));
+        }
+      } catch { alert('Erro de conexão.'); }
+      finally { btn.textContent = 'Confirmar Aposta'; btn.disabled = false; }
+    });
+
+    // ==========================================
+    // LOGS
+    // ==========================================
+
+    async function fetchLogs() {
+      const container = document.getElementById('logs-container');
+      container.innerHTML = `<div style="display:flex;align-items:center;gap:0.6rem;color:var(--text-secondary);padding:1rem 0;"><span class="spinner"></span>Carregando logs...</div>`;
+      try {
+        const res = await fetch('/api/logs', { headers: { 'Authorization': `Bearer ${currentToken}` } });
+        if (!res.ok) { container.innerHTML = `<p style="color:var(--error);padding:1rem 0;">Erro ao carregar logs.</p>`; return; }
+        const logs = await res.json();
+        if (!logs.length) { container.innerHTML = `<p style="color:var(--text-secondary);padding:1rem 0;">Nenhuma requisição registrada ainda.</p>`; return; }
+        container.innerHTML = logs.map(l => {
+          const t = new Date(l.ts);
+          const time = t.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+          const method = l.method.toUpperCase();
+          const mClass = { GET: 'method-get', POST: 'method-post', PUT: 'method-put', DELETE: 'method-delete' }[method] || 'method-get';
+          return `<div class="log-row">
+            <span class="log-ts">${time}</span>
+            <span class="method-badge ${mClass}">${method}</span>
+            <span class="${l.status === 'ok' ? 'log-status-ok' : 'log-status-err'}">${l.status === 'ok' ? '✓' : '✗'}</span>
+            <span class="log-path" title="${l.path}">${l.path}</span>
+            <span class="log-inst">${l.instanceName}</span>
+            <span class="log-ms">${l.ms}ms</span>
+          </div>`;
+        }).join('');
+      } catch { container.innerHTML = `<p style="color:var(--error);padding:1rem 0;">Erro de conexão.</p>`; }
+    }
+
     function closeModal(modalId) {
       document.getElementById(modalId).style.display = 'none';
-      if(modalId === 'modal-apostador') document.getElementById('apostador-form').reset();
-      if(modalId === 'modal-lutador') document.getElementById('lutador-form').reset();
-      if(modalId === 'modal-luta') document.getElementById('luta-form').reset();
-      if(modalId === 'modal-aposta') document.getElementById('aposta-form').reset();
+      if (modalId === 'modal-apostador') document.getElementById('apostador-form').reset();
+      if (modalId === 'modal-lutador') document.getElementById('lutador-form').reset();
+      if (modalId === 'modal-luta') document.getElementById('luta-form').reset();
+      if (modalId === 'modal-aposta') document.getElementById('aposta-form').reset();
     }
   </script>
 </body>
+
 </html>
