@@ -8,22 +8,7 @@ A ideia central é simples: em vez de o cliente final falar diretamente com cada
 
 ---
 
-## Arquitetura Geral
-
-```
-                        ┌─────────────────────────────────┐
-                        │         API GATEWAY              │
-  Cliente (Browser) ───▶│  Node.js + Express (porta 8080) │
-                        │         server.ts                │
-                        └────────────┬────────────────────┘
-                                     │
-              ┌──────────────────────┼──────────────────────┐
-              ▼                      ▼                       ▼
-     [Apostadores]           [Lutadores]              [Lutas]         [Apostas]
-   FightAzure | ApiSD    LutadoresSD | NanadeFight  BettingBeta | Bet3m   NanaDeBets | ApostaLutas
-```
-
-O gateway gerencia **4 categorias**, cada uma com **2 instâncias** (APIs de grupos diferentes):
+O **Gateway** gerencia **4 categorias**, cada uma com **2 instâncias** (APIs de grupos diferentes):
 
 | Categoria    | Instância 1          | Instância 2        |
 |-------------|----------------------|--------------------|
@@ -125,7 +110,7 @@ Cada flag representa um problema real que encontramos durante a integração:
 
 ---
 
-## Desafios de integração por API
+## Camada de Segurança de cada API
 
 ### FightAzure (apostadores)
 API Node.js padrão, autenticação simples com `usuario/senha`. Nenhuma transformação necessária.
